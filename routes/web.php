@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -24,6 +25,7 @@ Route::get('/login', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/package', [PackageController::class, 'index'])->name('package');
 });
 
 // Route::middleware(['auth:admin'])->group(function () {
