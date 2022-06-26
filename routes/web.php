@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
 
@@ -25,7 +28,15 @@ Route::get('/login', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/package', [PackageController::class, 'index'])->name('package');
+    Route::prefix('package')->group(function () {
+        Route::get('/', [PackageController::class, 'index'])->name('package');
+        Route::post('/store', [PackageController::class, 'store'])->name('package.store');
+        Route::post('/update/{id}', [PackageController::class, 'update'])->name('package.update');
+        Route::get('/destroy/{id}', [PackageController::class, 'destroy'])->name('package.destroy');
+    });
+    Route::get('/item', [ItemController::class, 'index'])->name('item');
+    Route::get('/income', [IncomeController::class, 'index'])->name('income');
+    Route::get('/expense', [ExpenseController::class, 'index'])->name('expense');
 });
 
 // Route::middleware(['auth:admin'])->group(function () {

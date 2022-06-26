@@ -1,6 +1,8 @@
 @include('app/components/header')
 
 <body id="page-top">
+    @include('sweetalert::alert')
+
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -50,6 +52,7 @@
 
     <!-- Javascripts-->
     @include('app/components/javascripts')
+    @yield('javascript')
     <!-- End of Javascripts-->
 
 </body>

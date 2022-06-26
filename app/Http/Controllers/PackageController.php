@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class PackageController extends Controller
 {
@@ -13,7 +16,8 @@ class PackageController extends Controller
      */
     public function index()
     {
-        return view('app.admin.package');
+        $packages = Package::all();
+        return view('app.admin.package', compact('packages'));
     }
 
     /**
@@ -34,7 +38,15 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $package = Package::create($request->all());
+
+        if ($package) {
+            Alert::success('Berhasil', 'Paket jasa baru berhasil dibuat');
+            return back();
+        } else {
+            Alert::error('Gagal', 'Paket jasa baru gagal dibuat');
+            return back();
+        }
     }
 
     /**
@@ -68,7 +80,15 @@ class PackageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $package = Package::find($id)->update($request->all());
+
+        if ($package) {
+            Alert::success('Berhasil', 'Paket jasa berhasil diubah');
+            return back();
+        } else {
+            Alert::error('Gagal', 'Paket jasa gagal diubah');
+            return back();
+        }
     }
 
     /**
@@ -79,6 +99,14 @@ class PackageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $package = Package::find($id)->delete();
+
+        if ($package) {
+            Alert::success('Berhasil', 'Paket jasa berhasil dihapus');
+            return back();
+        } else {
+            Alert::error('Gagal', 'Paket jasa gagal dihapus');
+            return back();
+        }
     }
 }

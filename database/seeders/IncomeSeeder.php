@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Income;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,35 +17,35 @@ class IncomeSeeder extends Seeder
     {
         $incomes = [
             [
-                'transaction_code' => 'TRX-0001',
+                'transaction_id' => 1,
                 'package_id' => 1,
                 'quantity' => 1,
-                'amount' => 25000,
-                'pay' => 50000,
-                'charge' => 25000,
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'transaction_code' => 'TRX-0002',
-                'package_id' => 1,
+                'transaction_id' => 2,
+                'package_id' => 2,
                 'quantity' => 1,
-                'amount' => 25000,
-                'pay' => 100000,
-                'charge' => 75000,
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'transaction_code' => 'TRX-0003',
-                'package_id' => 1,
-                'quantity' => 2,
-                'amount' => 50000,
-                'pay' => 50000,
-                'charge' => 0,
+                'transaction_id' => 3,
+                'package_id' => 3,
+                'quantity' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'transaction_id' => 3,
+                'package_id' => 4,
+                'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
             ],
         ];
+
+        Income::insert($incomes);
     }
 }

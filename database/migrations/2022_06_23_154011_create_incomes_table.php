@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Package;
+use App\Models\Transaction;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,12 +18,9 @@ return new class extends Migration
     {
         Schema::create('incomes', function (Blueprint $table) {
             $table->id();
-            $table->string('transaction_code');
+            $table->foreignIdFor(Transaction::class)->constrained();
             $table->foreignIdFor(Package::class)->constrained();
             $table->integer('quantity');
-            $table->integer('amount');
-            $table->integer('pay');
-            $table->integer('charge')->nullable();
             $table->timestamps();
         });
     }
