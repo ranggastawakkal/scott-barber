@@ -41,20 +41,20 @@ class PackageController extends Controller
     {
         $rules = [
             'name' => 'required|unique:packages,name',
-            'price' => 'required'
+            'price' => 'required|numeric'
         ];
 
         $messages = [
             'name.required' => 'Nama paket jasa wajib diisi!',
             'name.unique' => 'Nama paket jasa sudah terdaftar!',
-            'price.required' => 'Harga wajib diisi!'
+            'price.required' => 'Harga wajib diisi!',
+            'price.numeric' => 'Harga wajib berupa angka!'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            Alert::error('Gagal', $validator->errors()->getMessages());
-            return back();
+            return back()->withErrors($validator)->withInput($request->all);
         }
 
         $package = Package::create($request->all());
@@ -101,20 +101,20 @@ class PackageController extends Controller
     {
         $rules = [
             'name' => 'required|unique:packages,name,' . $id,
-            'price' => 'required'
+            'price' => 'required|numeric'
         ];
 
         $messages = [
             'name.required' => 'Nama paket jasa wajib diisi!',
             'name.unique' => 'Nama paket jasa sudah terdaftar!',
-            'price.required' => 'Harga wajib diisi!'
+            'price.required' => 'Harga wajib diisi!',
+            'price.numeric' => 'Harga wajib berupa angka!'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            Alert::error('Gagal', $validator->errors()->getMessages());
-            return back();
+            return back()->withErrors($validator);
         }
 
         $package = Package::find($id)->update($request->all());

@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -16,7 +20,7 @@ class EmployeeController extends Controller
     {
         $employees = User::where('role', 'employee')->get();
 
-        return
+        return view('app.admin.employee', compact('employees'));
     }
 
     /**
@@ -37,7 +41,44 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'Nama karyawan wajib diisi!',
+            'email.required' => 'Email wajib diisi!',
+            'email.unique' => 'Email sudah terdaftar!',
+            'password.required' => 'Password wajib diisi!',
+            'password.string' => 'Password harus berupa string!',
+            'password.min' => 'Panjang password minimal 6 karakter!',
+            'password.confirmed' => 'Password dan konfirmasi password harus sama!',
+            'password_confirmation.required' => 'Konfirmasi password wajib diisi!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput($request->all);
+        }
+
+        $employee = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => 'employee',
+            'password' => Hash::make($request->password)
+        ]);
+
+        if ($employee) {
+            Alert::success('Berhasil', 'Karyawan baru berhasil ditambahkan');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Karyawan baru gagal ditambahkan');
+        return back();
     }
 
     /**
@@ -71,7 +112,51 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $rules = [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'Nama karyawan wajib diisi!',
+            'email.required' => 'Email wajib diisi!',
+            'email.unique' => 'Email sudah terdaftar!',
+            'password.required' => 'Password wajib diisi!',
+            'password.string' => 'Password harus berupa string!',
+            'password.min' => 'Panjang password minimal 6 karakter!',
+            'password.confirmed' => 'Password dan konfirmasi password harus sama!',
+            'password_confirmation.required' => 'Konfirmasi password wajib diisi!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $employee = User::find($id);
+        if ($request->password !== $employee->password) {
+            $update = $employee->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+        } else {
+            $update = $employee->update([
+                'name' => $request->name,
+                'email' => $request->email
+            ]);
+        }
+
+        if ($update) {
+            Alert::success('Berhasil', 'Data karyawan berhasil diubah');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Data karyawan gagal diubah');
+        return back();
     }
 
     /**
@@ -82,6 +167,14 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $package = User::find($id)->delete();
+
+        if ($package) {
+            Alert::success('Berhasil', 'Data karyawan berhasil dihapus');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Data karyawan gagal dihapus');
+        return back();
     }
 }

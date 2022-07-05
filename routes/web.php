@@ -41,9 +41,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update/{id}', [ItemController::class, 'update'])->name('item.update');
         Route::get('/destroy/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
     });
+    Route::prefix('employee')->group(function () {
+        Route::get('/', [EmployeeController::class, 'index'])->name('employee');
+        Route::post('/store', [EmployeeController::class, 'store'])->name('employee.store');
+        Route::post('/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
+        Route::get('/destroy/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
+    });
     Route::get('/income', [IncomeController::class, 'index'])->name('income');
     Route::get('/expense', [ExpenseController::class, 'index'])->name('expense');
-    Route::get('/employee', [EmployeeController::class, 'index'])->name('employee');
 });
 
 // Route::middleware(['auth:admin'])->group(function () {

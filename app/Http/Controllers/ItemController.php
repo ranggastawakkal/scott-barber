@@ -41,20 +41,20 @@ class ItemController extends Controller
     {
         $rules = [
             'name' => 'required|unique:items,name',
-            'stock' => 'required'
+            'stock' => 'required|numeric'
         ];
 
         $messages = [
             'name.required' => 'Nama barang wajib diisi!',
             'name.unique' => 'Nama barang sudah terdaftar!',
-            'stock.required' => 'Stok barang wajib diisi!'
+            'stock.required' => 'Stok barang wajib diisi!',
+            'stock.numeric' => 'Stok barang wajib berupa angka!'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            Alert::error('Gagal', $validator->errors()->getMessages());
-            return back();
+            return back()->withErrors($validator)->withInput($request->all);
         }
 
         $item = Item::create($request->all());
@@ -101,20 +101,20 @@ class ItemController extends Controller
     {
         $rules = [
             'name' => 'required|unique:items,name,' . $id,
-            'stock' => 'required'
+            'stock' => 'required|numeric'
         ];
 
         $messages = [
             'name.required' => 'Nama barang wajib diisi!',
             'name.unique' => 'Nama barang sudah terdaftar!',
-            'stock.required' => 'Stok barang wajib diisi!'
+            'stock.required' => 'Stok barang wajib diisi!',
+            'stock.numeric' => 'Stok barang wajib berupa angka!'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            Alert::error('Gagal', $validator->errors()->getMessages());
-            return back();
+            return back()->withErrors($validator);
         }
 
         $item = Item::find($id)->update($request->all());

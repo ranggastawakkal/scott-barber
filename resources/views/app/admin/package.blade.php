@@ -10,6 +10,13 @@
                         Paket Jasa
                     </h6>
                 </div>
+                @if ($errors->count() > 0)
+                    <div id="ERROR_COPY" style="display: none;">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}<br />
+                        @endforeach
+                    </div>
+                @endif
                 <div class="card-body">
                     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
                         data-bs-target="#modalTambahData">
@@ -64,7 +71,8 @@
                         <div class="mb-3">
                             <label for="name" class="col-form-label font-weight-bold">Nama Paket
                                 Jasa</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name"
+                                value="{{ old('name') }}" required>
                         </div>
                         <label for="price" class="col-form-label font-weight-bold">Harga</label>
                         <div class="input-group mb-3">
@@ -72,7 +80,7 @@
                                 <span class="input-group-text font-weight-bold" id="basic-addon1">Rp.</span>
                             </div>
                             <input type="number" class="form-control" aria-describedby="basic-addon1" id="price"
-                                name="price" onkeypress="price()" required>
+                                name="price" onkeypress="price()" value="{{ old('price') }}" required>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -156,16 +164,31 @@
         $('.btn-delete').on('click', function(event) {
             event.preventDefault();
             const url = $(this).attr('href');
-            swal({
+            Swal.fire({
                 title: 'Anda yakin?',
-                text: 'Data ini akan dihapus permanen!',
+                text: "Data akan dihapus permanen!",
                 icon: 'warning',
-                buttons: ["Batal", "Hapus"],
-            }).then(function(value) {
-                if (value) {
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     window.location.href = url;
                 }
-            });
+            })
         });
+
+        // validation error
+        var has_errors = document.querySelector('#ERROR_COPY');
+
+        if (has_errors !== null) {
+            Swal.fire({
+                title: 'Gagal',
+                icon: 'error',
+                html: jQuery('#ERROR_COPY').html(),
+                showCloseButton: true
+            })
+        }
+        // end of validation error
     </script>
 @endsection

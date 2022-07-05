@@ -52,7 +52,6 @@
 
     <!-- Javascripts-->
     @include('app/components/javascripts')
-    @yield('javascript')
     <!-- End of Javascripts-->
 
 </body>

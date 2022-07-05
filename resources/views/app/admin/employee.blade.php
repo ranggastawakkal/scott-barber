@@ -10,6 +10,13 @@
                         Karyawan
                     </h6>
                 </div>
+                @if ($errors->count() > 0)
+                    <div id="ERROR_COPY" style="display: none;">
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}<br />
+                        @endforeach
+                    </div>
+                @endif
                 <div class="card-body">
                     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
                         data-bs-target="#modalTambahData">
@@ -20,22 +27,22 @@
                             <thead class="text-center">
                                 <tr>
                                     <th>No.</th>
-                                    <th>Nama Karyawan</th>
-                                    <th>Stok</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($items as $item)
+                                @foreach ($employees as $employee)
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td>{{ $item->name }}</td>
-                                        <td>{{ $item->stock }}</td>
+                                        <td>{{ $employee->name }}</td>
+                                        <td>{{ $employee->email }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
-                                                data-bs-target="#modalUbahData{{ $item->id }}"
+                                                data-bs-target="#modalUbahData{{ $employee->id }}"
                                                 class="btn btn-sm btn-dark">Ubah</a>
-                                            <a href="{{ route('item.destroy', $item->id) }}"
+                                            <a href="{{ route('employee.destroy', $employee->id) }}"
                                                 class="btn btn-sm btn-danger btn-delete">Hapus</a>
                                         </td>
                                     </tr>
@@ -59,15 +66,28 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('item.store') }}">
+                    <form method="POST" action="{{ route('employee.store') }}">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="col-form-label font-weight-bold">Nama Karyawan</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name"
+                                value="{{ old('name') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="stock" class="col-form-label font-weight-bold">Stok</label>
-                            <input type="number" class="form-control" id="stock" name="stock" required>
+                            <label for="email" class="col-form-label font-weight-bold">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                value="{{ old('email') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="col-form-label font-weight-bold">Password</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                value="{{ old('password') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="col-form-label font-weight-bold">Konfirmasi
+                                Password</label>
+                            <input type="password" class="form-control" id="password_confirmation"
+                                name="password_confirmation" value="{{ old('password_confirmation') }}" required>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -82,8 +102,8 @@
     {{-- end of modal add data --}}
 
     {{-- modal editUbahdata --}}
-    @foreach ($items as $item)
-        <div class="modal fade" id="modalUbahData{{ $item->id }}" tabindex="-1" aria-labelledby="modalUbahDataLabel"
+    @foreach ($employees as $employee)
+        <div class="modal fade" id="modalUbahData{{ $employee->id }}" tabindex="-1" aria-labelledby="modalUbahDataLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
@@ -94,19 +114,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('item.update', $item->id) }}">
+                        <form method="POST" action="{{ route('employee.update', $employee->id) }}">
                             @csrf
-                            <input type="hidden" name="id" value="{{ $item->id }}">
+                            <input type="hidden" name="id" value="{{ $employee->id }}">
                             <div class="mb-3">
-                                <label for="name" class="col-form-label font-weight-bold">Nama Paket
-                                    Jasa</label>
+                                <label for="name" class="col-form-label font-weight-bold">Nama Karyawan</label>
                                 <input type="text" class="form-control" id="name" name="name"
-                                    value="{{ $item->name }}" required>
+                                    value="{{ $employee->name }}" required>
                             </div>
                             <div class="mb-3">
-                                <label for="stock" class="col-form-label font-weight-bold">Stok</label>
-                                <input type="number" class="form-control" id="stock" name="stock"
-                                    value="{{ $item->stock }}" required>
+                                <label for="email" class="col-form-label font-weight-bold">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ $employee->email }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="col-form-label font-weight-bold">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    value="{{ $employee->password }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="col-form-label font-weight-bold">Konfirmasi
+                                    Password</label>
+                                <input type="password" class="form-control" id="password_confirmation"
+                                    name="password_confirmation" value="{{ $employee->password }}" required>
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -148,16 +178,31 @@
         $('.btn-delete').on('click', function(event) {
             event.preventDefault();
             const url = $(this).attr('href');
-            swal({
+            Swal.fire({
                 title: 'Anda yakin?',
-                text: 'Data ini akan dihapus permanen!',
+                text: "Data akan dihapus permanen!",
                 icon: 'warning',
-                buttons: ["Batal", "Hapus"],
-            }).then(function(value) {
-                if (value) {
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Hapus'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     window.location.href = url;
                 }
-            });
+            })
         });
+
+        // validation error
+        var has_errors = document.querySelector('#ERROR_COPY');
+
+        if (has_errors !== null) {
+            Swal.fire({
+                title: 'Gagal',
+                icon: 'error',
+                html: jQuery('#ERROR_COPY').html(),
+                showCloseButton: true
+            })
+        }
+        // end of validation error
     </script>
 @endsection

@@ -40,5 +40,7 @@
 <script src="{{ asset('vendor/datatables/Buttons-1.7.1/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/Buttons-1.7.1/js/buttons.colVis.min.js') }}"></script>
 
-<!-- SweetAlert -->
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- SweetAlert 2 -->
+<!-- for error validation messages and delete modal -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.20/dist/sweetalert2.min.js"></script>
+@yield('javascript')
