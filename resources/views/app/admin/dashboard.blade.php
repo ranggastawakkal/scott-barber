@@ -6,13 +6,13 @@
         <h6 class="mb-0 text-gray-800" id="date-time"></h6>
     </div>
     <div class="row justify-content-around py-4">
-        <a href="#" class="btn btn-success btn-lg btn-icon-split">
+        <a href="#" class="btn btn-success btn-lg btn-icon-split shadow">
             <span class="icon text-white-50">
                 <i class="fas fa-plus"></i>
             </span>
             <span class="text">Buat Pemasukan</span>
         </a>
-        <a href="#" class="btn btn-danger btn-lg btn-icon-split">
+        <a href="#" class="btn btn-danger btn-lg btn-icon-split shadow">
             <span class="icon text-white-50">
                 <i class="fas fa-minus"></i>
             </span>

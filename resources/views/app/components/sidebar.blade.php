@@ -36,12 +36,7 @@
     <li class="nav-item {{ request()->is('income') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('income') }}">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Pemasukan</span></a>
-    </li>
-    <li class="nav-item {{ request()->is('expense') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('expense') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Pengeluaran</span></a>
+            <span>Jurnal</span></a>
     </li>
 
     <!-- Divider -->
@@ -53,8 +48,8 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item {{ request()->is('employee') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('employee') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Karyawan</span></a>
     </li>

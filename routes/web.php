@@ -5,6 +5,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -34,9 +35,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update/{id}', [PackageController::class, 'update'])->name('package.update');
         Route::get('/destroy/{id}', [PackageController::class, 'destroy'])->name('package.destroy');
     });
-    Route::get('/item', [ItemController::class, 'index'])->name('item');
+    Route::prefix('item')->group(function () {
+        Route::get('/', [ItemController::class, 'index'])->name('item');
+        Route::post('/store', [ItemController::class, 'store'])->name('item.store');
+        Route::post('/update/{id}', [ItemController::class, 'update'])->name('item.update');
+        Route::get('/destroy/{id}', [ItemController::class, 'destroy'])->name('item.destroy');
+    });
     Route::get('/income', [IncomeController::class, 'index'])->name('income');
     Route::get('/expense', [ExpenseController::class, 'index'])->name('expense');
+    Route::get('/employee', [EmployeeController::class, 'index'])->name('employee');
 });
 
 // Route::middleware(['auth:admin'])->group(function () {

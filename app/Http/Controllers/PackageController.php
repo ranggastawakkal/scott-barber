@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Package;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PackageController extends Controller
@@ -38,15 +39,33 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'name' => 'required|unique:packages,name',
+            'price' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'Nama paket jasa wajib diisi!',
+            'name.unique' => 'Nama paket jasa sudah terdaftar!',
+            'price.required' => 'Harga wajib diisi!'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            Alert::error('Gagal', $validator->errors()->getMessages());
+            return back();
+        }
+
         $package = Package::create($request->all());
 
         if ($package) {
-            Alert::success('Berhasil', 'Paket jasa baru berhasil dibuat');
-            return back();
-        } else {
-            Alert::error('Gagal', 'Paket jasa baru gagal dibuat');
+            Alert::success('Berhasil', 'Paket jasa baru berhasil ditambahkan');
             return back();
         }
+
+        Alert::error('Gagal', 'Paket jasa baru gagal ditambahkan');
+        return back();
     }
 
     /**
@@ -80,19 +99,38 @@ class PackageController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $rules = [
+            'name' => 'required|unique:packages,name,' . $id,
+            'price' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'Nama paket jasa wajib diisi!',
+            'name.unique' => 'Nama paket jasa sudah terdaftar!',
+            'price.required' => 'Harga wajib diisi!'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            Alert::error('Gagal', $validator->errors()->getMessages());
+            return back();
+        }
+
         $package = Package::find($id)->update($request->all());
 
         if ($package) {
             Alert::success('Berhasil', 'Paket jasa berhasil diubah');
             return back();
-        } else {
-            Alert::error('Gagal', 'Paket jasa gagal diubah');
-            return back();
         }
+
+        Alert::error('Gagal', 'Paket jasa gagal diubah');
+        return back();
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from s
+     * torage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -104,9 +142,9 @@ class PackageController extends Controller
         if ($package) {
             Alert::success('Berhasil', 'Paket jasa berhasil dihapus');
             return back();
-        } else {
-            Alert::error('Gagal', 'Paket jasa gagal dihapus');
-            return back();
         }
+
+        Alert::error('Gagal', 'Paket jasa gagal dihapus');
+        return back();
     }
 }

@@ -39,3 +39,6 @@
 <script src="{{ asset('vendor/datatables/Buttons-1.7.1/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/Buttons-1.7.1/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/Buttons-1.7.1/js/buttons.colVis.min.js') }}"></script>
+
+<!-- SweetAlert -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

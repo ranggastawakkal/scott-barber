@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class ItemController extends Controller
 {
@@ -14,7 +17,8 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view('app.admin.item');
+        $items = Item::all();
+        return view('app.admin.item', compact('items'));
     }
 
     /**
@@ -35,7 +39,33 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'name' => 'required|unique:items,name',
+            'stock' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'Nama barang wajib diisi!',
+            'name.unique' => 'Nama barang sudah terdaftar!',
+            'stock.required' => 'Stok barang wajib diisi!'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            Alert::error('Gagal', $validator->errors()->getMessages());
+            return back();
+        }
+
+        $item = Item::create($request->all());
+
+        if ($item) {
+            Alert::success('Berhasil', 'Barang baru berhasil ditambahkan');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Barang baru gagal ditambahkan');
+        return back();
     }
 
     /**
@@ -67,9 +97,35 @@ class ItemController extends Controller
      * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, $id)
     {
-        //
+        $rules = [
+            'name' => 'required|unique:items,name,' . $id,
+            'stock' => 'required'
+        ];
+
+        $messages = [
+            'name.required' => 'Nama barang wajib diisi!',
+            'name.unique' => 'Nama barang sudah terdaftar!',
+            'stock.required' => 'Stok barang wajib diisi!'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            Alert::error('Gagal', $validator->errors()->getMessages());
+            return back();
+        }
+
+        $item = Item::find($id)->update($request->all());
+
+        if ($item) {
+            Alert::success('Berhasil', 'Barang berhasil diubah');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Barang gagal diubah');
+        return back();
     }
 
     /**
@@ -78,8 +134,16 @@ class ItemController extends Controller
      * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Item $item)
+    public function destroy(Item $item, $id)
     {
-        //
+        $item = Item::find($id)->delete();
+
+        if ($item) {
+            Alert::success('Berhasil', 'Barang berhasil dihapus');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Barang gagal dihapus');
+        return back();
     }
 }
