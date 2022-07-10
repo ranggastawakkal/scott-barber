@@ -33,8 +33,8 @@
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Transaksi Harian</span></a>
     </li>
-    <li class="nav-item {{ request()->is('income') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('income') }}">
+    <li class="nav-item {{ request()->is('journal') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('journal') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Jurnal</span></a>
     </li>
