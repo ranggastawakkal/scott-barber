@@ -28,8 +28,8 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item {{ request()->is('daily-transactions') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('daily-transactions') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Transaksi Harian</span></a>
     </li>

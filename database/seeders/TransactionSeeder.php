@@ -17,6 +17,7 @@ class TransactionSeeder extends Seeder
     {
         $transactions = [
             [
+                'user_id' => 2,
                 'transaction_code' => 'TRX-00001',
                 'type' => 'income',
                 'amount' => 25000,
@@ -26,6 +27,7 @@ class TransactionSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'user_id' => 3,
                 'transaction_code' => 'TRX-00002',
                 'type' => 'income',
                 'amount' => 20000,
@@ -35,6 +37,7 @@ class TransactionSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'user_id' => 4,
                 'transaction_code' => 'TRX-00003',
                 'type' => 'income',
                 'amount' => 40000,
@@ -44,11 +47,12 @@ class TransactionSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'user_id' => 2,
                 'transaction_code' => 'TRX-00004',
                 'type' => 'expense',
                 'amount' => 45000,
                 'pay' => 45000,
-                'charge' => null,
+                'charge' => 0,
                 'created_at' => now(),
                 'updated_at' => now()
             ],

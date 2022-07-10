@@ -24,6 +24,11 @@ class Package extends Model
 
     public function getFormattedPriceAttribute()
     {
-        return number_format($this->attributes['price'], 2);
+        return number_format($this->attributes['price'], 0, ',', '.');
+    }
+
+    public function income()
+    {
+        return $this->hasOne(Income::class, 'package_id', 'id');
     }
 }

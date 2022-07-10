@@ -37,7 +37,7 @@
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $package->name }}</td>
-                                        <td>Rp. {{ number_format($package->price, 0, ',', '.') }}</td>
+                                        <td>Rp. {{ $package->getFormattedPriceAttribute() }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
                                                 data-bs-target="#modalUbahData{{ $package->id }}"

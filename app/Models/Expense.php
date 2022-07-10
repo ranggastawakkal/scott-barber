@@ -25,4 +25,14 @@ class Expense extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id', 'id');
+    }
 }

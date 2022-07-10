@@ -2,12 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\IncomeController;
-use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +48,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/destroy/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
     });
     Route::prefix('daily-transactions')->group(function () {
-        Route::get('/', [ExpenseController::class, 'index'])->name('daily-transactions');
+        Route::get('/', [TransactionController::class, 'index'])->name('daily-transactions');
+        Route::get('/destroy/{id}', [TransactionController::class, 'destroy'])->name('daily-transactions.destroy');
     });
     Route::get('/journal', [JournalController::class, 'index'])->name('journal');
 });

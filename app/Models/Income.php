@@ -25,4 +25,14 @@ class Income extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'package_id', 'id');
+    }
 }
