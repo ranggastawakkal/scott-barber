@@ -22,30 +22,40 @@ class UserSeeder extends Seeder
                 'email' => 'admin@mail.com',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'name' => 'employee',
                 'email' => 'employee@mail.com',
                 'password' => Hash::make('password'),
                 'role' => 'employee',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'name' => 'employee 2',
                 'email' => 'employee2@mail.com',
                 'password' => Hash::make('password'),
                 'role' => 'employee',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'name' => 'employee 3',
                 'email' => 'employee3@mail.com',
                 'password' => Hash::make('password'),
                 'role' => 'employee',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'name' => 'employee 4',
                 'email' => 'employee4@mail.com',
                 'password' => Hash::make('password'),
                 'role' => 'employee',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
         ];
 

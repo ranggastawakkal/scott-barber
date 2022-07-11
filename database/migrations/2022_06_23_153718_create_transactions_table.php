@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\Item;
 use App\Models\User;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Package;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -19,9 +21,10 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained();
             $table->string('transaction_code');
             $table->string('type');
-            $table->integer('amount');
-            $table->integer('pay');
-            $table->integer('charge')->nullable();
+            $table->foreignIdFor(Package::class)->nullable()->constrained();
+            $table->foreignIdFor(Item::class)->nullable()->constrained();
+            $table->integer('quantity');
+            $table->integer('total');
             $table->timestamps();
         });
     }

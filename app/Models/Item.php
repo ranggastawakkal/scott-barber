@@ -21,7 +21,7 @@ class Item extends Model
         'updated_at'
     ];
 
-    public function expense()
+    public function transaction()
     {
         return $this->hasOne(Expense::class, 'item_id', 'id');
     }

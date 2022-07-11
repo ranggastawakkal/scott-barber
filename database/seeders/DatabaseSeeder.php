@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             PackageSeeder::class,
-            TransactionSeeder::class,
             ItemSeeder::class,
-            ExpenseSeeder::class,
-            IncomeSeeder::class,
+            TransactionSeeder::class,
+            // ExpenseSeeder::class,
+            // IncomeSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create();

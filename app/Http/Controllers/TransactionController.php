@@ -15,6 +15,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::whereDate('created_at', date('Y-m-d'))->get();
+
         return view('app.admin.daily-transactions', compact('transactions'));
     }
 

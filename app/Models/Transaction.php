@@ -12,17 +12,30 @@ class Transaction extends Model
 
     protected $table = 'transactions';
     protected $primaryKey = 'id';
+    protected $foreignKey = [
+        'user_id',
+        'package_id',
+        'item_id'
+    ];
     protected $fillable = [
+        'user_id',
         'transaction_code',
-        'amount',
-        'pay',
-        'charge'
+        'type',
+        'package_id',
+        'item_id',
+        'quantity',
+        'total',
     ];
 
     protected $dates = [
         'created_at',
         'updated_at'
     ];
+
+    public function getFormattedTotalAttribute()
+    {
+        return number_format($this->attributes['total'], 0, ',', '.');
+    }
 
     public function user()
     {
@@ -31,11 +44,21 @@ class Transaction extends Model
 
     public function income()
     {
-        return $this->hasOne(Income::class, 'transaction_id', 'id');
+        return $this->hasMany(Income::class, 'transaction_id', 'id');
     }
 
     public function expense()
     {
-        return $this->hasOne(Expense::class, 'transaction_id', 'id');
+        return $this->hasMany(Expense::class, 'transaction_id', 'id');
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'package_id', 'id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id', 'id');
     }
 }

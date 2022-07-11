@@ -27,7 +27,7 @@ class Package extends Model
         return number_format($this->attributes['price'], 0, ',', '.');
     }
 
-    public function income()
+    public function transaction()
     {
         return $this->hasOne(Income::class, 'package_id', 'id');
     }

@@ -40,8 +40,6 @@
                                     <th>Barang</th>
                                     <th>Jumlah</th>
                                     <th>Nominal</th>
-                                    <th>Bayar</th>
-                                    <th>Kembali</th>
                                     <th>Waktu</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -54,18 +52,15 @@
                                         <td>{{ $transaction->transaction_code }}</td>
                                         @if ($transaction->type == 'income')
                                             <td>Pemasukan</td>
-                                            <td>{{ $transaction->income->package->name }}</td>
+                                            <td>{{ $transaction->package->name }}</td>
                                             <td></td>
-                                            <td>{{ $transaction->income->quantity }}</td>
                                         @else
                                             <td>Pengeluaran</td>
                                             <td></td>
-                                            <td>{{ $transaction->expense->item->name }}</td>
-                                            <td>{{ $transaction->expense->quantity }}</td>
+                                            <td>{{ $transaction->item->name }}</td>
                                         @endif
-                                        <td>{{ $transaction->amount }}</td>
-                                        <td>{{ $transaction->pay }}</td>
-                                        <td>{{ $transaction->charge }}</td>
+                                        <td>{{ $transaction->quantity }}</td>
+                                        <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
                                         <td>{{ $transaction->updated_at }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
