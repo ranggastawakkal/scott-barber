@@ -20,10 +20,10 @@ class DashboardController extends Controller
         $today = Carbon::now()->toDateTimeString();
 
         if ($user->isAdmin()) {
-            $income = Transaction::where('type', 'income')->whereDate('created_at', date('Y-m-d'))->sum('amount');
-            $expense = Transaction::where('type', 'expense')->whereDate('created_at', date('Y-m-d'))->sum('amount');
-            $income_per_month = Transaction::where('type', 'income')->whereMonth('created_at', date('m'))->sum('amount');
-            $expense_per_month = Transaction::where('type', 'expense')->whereMonth('created_at', date('m'))->sum('amount');
+            $income = Transaction::where('type', 'income')->whereDate('created_at', date('Y-m-d'))->sum('total');
+            $expense = Transaction::where('type', 'expense')->whereDate('created_at', date('Y-m-d'))->sum('total');
+            $income_per_month = Transaction::where('type', 'income')->whereMonth('created_at', date('m'))->sum('total');
+            $expense_per_month = Transaction::where('type', 'expense')->whereMonth('created_at', date('m'))->sum('total');
 
             if (!$income) {
                 $income = 0;

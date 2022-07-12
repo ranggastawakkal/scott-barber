@@ -5,10 +5,20 @@
     <div class="row">
         <div class="col-xl-12 col-lg-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-dark">
-                        Transaksi Hari Ini
+                        Transaksi Hari Ini ({{ date('d M Y') }})
                     </h6>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
+                            data-bs-target="#modalTambahPemasukan">
+                            <i class="fas fa-plus"></i> Tambah Pemasukan
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#modalTambahPengeluaran">
+                            <i class="fas fa-plus"></i> Tambah Pengeluaran
+                        </button>
+                    </div>
                 </div>
                 @if ($errors->count() > 0)
                     <div id="ERROR_COPY" style="display: none;">
@@ -18,16 +28,6 @@
                     </div>
                 @endif
                 <div class="card-body">
-                    <div class="row justify-content-around mb-3">
-                        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
-                            data-bs-target="#modalTambahData">
-                            <i class="fas fa-plus"></i> Tambah Pemasukan
-                        </button>
-                        <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal"
-                            data-bs-target="#modalTambahData">
-                            <i class="fas fa-plus"></i> Tambah Pengeluaran
-                        </button>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover display nowrap" id="dataTable" width="100%" cellspacing="0">
                             <thead class="text-center">
@@ -78,6 +78,63 @@
             </div>
         </div>
     </div>
+
+    {{-- modal add data --}}
+    <div class="modal fade" id="modalTambahPemasukan" tabindex="-1" aria-labelledby="modalTambahPemasukanLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTambahPemasukanLabel">Tambah Pemasukan</h5>
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('transactions.income.store') }}">
+                        @csrf
+                        <div id="add_form">
+                            <div class="row mb-3">
+                                <div class="col-md-5">
+                                    <select class="form-control" name="package[]" id="package" required>
+                                        <option value="" disabled selected>--- Paket Jasa ---</option>
+                                        @foreach ($packages as $package)
+                                            <option value="{{ $package->id }}">{{ $package->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" class="form-control" name="quantity[]" id="quantity"
+                                        placeholder="Jumlah" value="1" min="1" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text font-weight-bold" id="basic-addon1">Rp.</span>
+                                        </div>
+                                        <input type="text" class="form-control bg-white" aria-describedby="basic-addon1"
+                                            id="subtotal" name="subtotal[]" value="{{ old('subtotal') }}"
+                                            placeholder="Sub Total" required readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" id="btn_add_form" class="btn btn-outline-info">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="reset" class="btn btn-warning">Reset</button>
+                    <button type="submit" class="btn btn-success">Simpan</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- end of modal add data --}}
 @endsection
 
 @section('javascript')
@@ -101,24 +158,82 @@
                 stateSave: true, // keep paging
                 "scrollX": true
             });
+
+            $('.btn-delete').on('click', function(event) {
+                event.preventDefault();
+                const url = $(this).attr('href');
+                Swal.fire({
+                    title: 'Anda yakin?',
+                    text: "Data akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Hapus'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                })
+            });
+
+            $('#btn_add_form').on('click', function(e) {
+                e.preventDefault();
+                $('#add_form').append(`
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <select class="form-control" name="package[]" id="package" required>
+                                <option value="" disabled selected>--- Paket Jasa ---</option>
+                                @foreach ($packages as $package)
+                                    <option value="{{ $package->id }}">{{ $package->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" name="quantity[]" id="quantity"
+                                placeholder="Jumlah" value="1" min="1" required>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text font-weight-bold" id="basic-addon1">Rp.</span>
+                                </div>
+                                <input type="number" class="form-control bg-white" aria-describedby="basic-addon1"
+                                    id="subtotal" name="subtotal[]" value="{{ old('subtotal') }}"
+                                    placeholder="Sub Total" required readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" id="btn_add_form" class="btn btn-outline-danger btn-remove-form">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+
+            $(document).on('click','.btn-remove-form',function(e){
+                e.preventDefault();
+                $(this).parent().parent().remove();
+            });
+
+            $('#package').on('change',function(e){
+                var id = $(this).val();
+                $.ajax({
+                    url: '/daily-transactions/get-package-price/' + id,
+                    method: 'GET',
+                    success: function(response){
+                        $('#subtotal').val(response);
+                        $('#quantity').on('change',function(){
+                            var quantity = $('#quantity').val();
+                            var subtotal = quantity * response.replace(".", "");
+                            $('#subtotal').val(subtotal);
+                        });
+                    }
+                });
+
+            });
         });
 
-        $('.btn-delete').on('click', function(event) {
-            event.preventDefault();
-            const url = $(this).attr('href');
-            Swal.fire({
-                title: 'Anda yakin?',
-                text: "Data akan dihapus permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'Batal',
-                confirmButtonText: 'Hapus'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            })
-        });
 
         // validation error
         var has_errors = document.querySelector('#ERROR_COPY');

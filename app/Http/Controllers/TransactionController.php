@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TransactionController extends Controller
 {
@@ -15,8 +17,9 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::whereDate('created_at', date('Y-m-d'))->get();
+        $packages = Package::all();
 
-        return view('app.admin.daily-transactions', compact('transactions'));
+        return view('app.admin.daily-transactions', compact('transactions', 'packages'));
     }
 
     /**
@@ -35,9 +38,9 @@ class TransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeIncome(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -83,5 +86,12 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         //
+    }
+
+    public function getPackagePrice(Request $request, $id)
+    {
+        $package = Package::findOrFail($id);
+
+        return response()->json($package->getFormattedPriceAttribute());
     }
 }

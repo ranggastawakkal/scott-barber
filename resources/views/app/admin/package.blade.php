@@ -159,24 +159,25 @@
                 stateSave: true, // keep paging
                 "scrollX": true
             });
+
+            $('.btn-delete').on('click', function(event) {
+                event.preventDefault();
+                const url = $(this).attr('href');
+                Swal.fire({
+                    title: 'Anda yakin?',
+                    text: "Data akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Hapus'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                })
+            });
         });
 
-        $('.btn-delete').on('click', function(event) {
-            event.preventDefault();
-            const url = $(this).attr('href');
-            Swal.fire({
-                title: 'Anda yakin?',
-                text: "Data akan dihapus permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'Batal',
-                confirmButtonText: 'Hapus'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            })
-        });
 
         // validation error
         var has_errors = document.querySelector('#ERROR_COPY');

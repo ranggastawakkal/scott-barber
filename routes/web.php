@@ -49,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::prefix('daily-transactions')->group(function () {
         Route::get('/', [TransactionController::class, 'index'])->name('daily-transactions');
+        Route::post('/store', [TransactionController::class, 'storeIncome'])->name('transactions.income.store');
+        Route::get('/get-package-price/{id}', [TransactionController::class, 'getPackagePrice'])->name('transactions.get-package-price');
         Route::get('/destroy/{id}', [TransactionController::class, 'destroy'])->name('daily-transactions.destroy');
     });
     Route::get('/journal', [JournalController::class, 'index'])->name('journal');
