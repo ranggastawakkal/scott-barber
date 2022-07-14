@@ -176,12 +176,13 @@
                 })
             });
 
+            let i = 1;
             $('#btn_add_form').on('click', function(e) {
                 e.preventDefault();
                 $('#add_form').append(`
                     <div class="row mb-3">
                         <div class="col-md-5">
-                            <select class="form-control" name="package[]" id="package" required>
+                            <select class="form-control" name="package[]" id="package${i}" required>
                                 <option value="" disabled selected>--- Paket Jasa ---</option>
                                 @foreach ($packages as $package)
                                     <option value="{{ $package->id }}">{{ $package->name }}</option>
@@ -189,7 +190,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control" name="quantity[]" id="quantity"
+                            <input type="number" class="form-control" name="quantity[]" id="quantity${i}"
                                 placeholder="Jumlah" value="1" min="1" required>
                         </div>
                         <div class="col-md-4">
@@ -198,7 +199,7 @@
                                     <span class="input-group-text font-weight-bold" id="basic-addon1">Rp.</span>
                                 </div>
                                 <input type="number" class="form-control bg-white" aria-describedby="basic-addon1"
-                                    id="subtotal" name="subtotal[]" value="{{ old('subtotal') }}"
+                                    id="subtotal${i}" name="subtotal[]" value="{{ old('subtotal') }}"
                                     placeholder="Sub Total" required readonly>
                             </div>
                         </div>
@@ -209,28 +210,53 @@
                         </div>
                     </div>
                 `);
-            });
 
-            $(document).on('click','.btn-remove-form',function(e){
-                e.preventDefault();
-                $(this).parent().parent().remove();
+                $(document).on('click','.btn-remove-form',function(e){
+                    e.preventDefault();
+                    $(this).parent().parent().remove();
+                });
+
+                $(`#package${i}`).on('change',function(e){
+                    e.preventDefault();
+                    var id = $(this).val();
+                    console.log(id);
+                    $.ajax({
+                        url: '/daily-transactions/get-package-price/' + id,
+                        method: 'GET',
+                        success: function(response){
+                            var quantity = $(`#quantity${i}`);
+                            var subtotal = $(`#subtotal${i}`);
+                            var subtotalVal = quantity.val() * response.replace(".", "");
+
+                            subtotal.val(subtotalVal)
+
+                            quantity.on('change',function(){
+                                subtotal.val(quantity.val() * response.replace(".", ""));
+                            });
+                        }
+                    });
+                });
+                i++;
             });
 
             $('#package').on('change',function(e){
+                e.preventDefault();
                 var id = $(this).val();
                 $.ajax({
                     url: '/daily-transactions/get-package-price/' + id,
                     method: 'GET',
                     success: function(response){
-                        $('#subtotal').val(response);
-                        $('#quantity').on('change',function(){
-                            var quantity = $('#quantity').val();
-                            var subtotal = quantity * response.replace(".", "");
-                            $('#subtotal').val(subtotal);
+                        var quantity = $('#quantity');
+                        var subtotal = $('#subtotal');
+                        var subtotalVal = quantity.val() * response.replace(".", "");
+
+                        subtotal.val(subtotalVal)
+
+                        quantity.on('change',function(){
+                            subtotal.val(quantity.val() * response.replace(".", ""));
                         });
                     }
                 });
-
             });
         });
 
