@@ -13,10 +13,6 @@
 <!-- Page level plugins -->
 <script src="{{ asset('vendor/sb-admin-2/vendor/chart.js/Chart.min.js') }}"></script>
 
-<!-- Page level custom scripts -->
-<script src="{{ asset('vendor/sb-admin-2/js/demo/chart-area-demo.js') }}"></script>
-<script src="{{ asset('vendor/sb-admin-2/js/demo/chart-pie-demo.js') }}"></script>
-
 <!-- DataTables -->
 <script type="text/javascript"
     src="https://datatables.net/release-datatables/extensions/FixedColumns/js/dataTables.fixedColumns.js"></script>

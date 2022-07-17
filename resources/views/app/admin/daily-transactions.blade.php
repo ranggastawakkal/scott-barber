@@ -176,7 +176,31 @@
                 })
             });
 
-            let i = 1;
+            $('#package').on('change',function(e){
+                e.preventDefault();
+                var id = $(this).val();
+                $.ajax({
+                    url: '/daily-transactions/get-package-price/' + id,
+                    method: 'GET',
+                    success: function(response){
+                        var quantity = $('#quantity');
+                        var subtotal = $('#subtotal');
+                        var subtotalVal = quantity.val() * response.replace(".", "");
+
+                        subtotal.val(subtotalVal);
+
+                        console.log(response);
+                        console.log(quantity.val());
+                        console.log(subtotal.val());
+
+                        quantity.on('change',function(){
+                            subtotal.val(quantity.val() * response.replace(".", ""));
+                        });
+                    }
+                });
+            });
+
+            i = 1;
             $('#btn_add_form').on('click', function(e) {
                 e.preventDefault();
                 $('#add_form').append(`
@@ -211,24 +235,23 @@
                     </div>
                 `);
 
-                $(document).on('click','.btn-remove-form',function(e){
-                    e.preventDefault();
-                    $(this).parent().parent().remove();
-                });
-
-                $(`#package${i}`).on('change',function(e){
+                $('#package'+i).on('change',function(e){
                     e.preventDefault();
                     var id = $(this).val();
-                    console.log(id);
                     $.ajax({
                         url: '/daily-transactions/get-package-price/' + id,
                         method: 'GET',
                         success: function(response){
-                            var quantity = $(`#quantity${i}`);
-                            var subtotal = $(`#subtotal${i}`);
+                            var quantity = $('#quantity'+i);
+                            var subtotal = $('#subtotal'+i);
                             var subtotalVal = quantity.val() * response.replace(".", "");
 
-                            subtotal.val(subtotalVal)
+                            subtotal.val(subtotalVal);
+
+                            console.log(i);
+                            console.log(response);
+                            console.log(quantity.val());
+                            console.log(subtotal.val());
 
                             quantity.on('change',function(){
                                 subtotal.val(quantity.val() * response.replace(".", ""));
@@ -236,30 +259,14 @@
                         }
                     });
                 });
-                i++;
-            });
-
-            $('#package').on('change',function(e){
-                e.preventDefault();
-                var id = $(this).val();
-                $.ajax({
-                    url: '/daily-transactions/get-package-price/' + id,
-                    method: 'GET',
-                    success: function(response){
-                        var quantity = $('#quantity');
-                        var subtotal = $('#subtotal');
-                        var subtotalVal = quantity.val() * response.replace(".", "");
-
-                        subtotal.val(subtotalVal)
-
-                        quantity.on('change',function(){
-                            subtotal.val(quantity.val() * response.replace(".", ""));
-                        });
-                    }
-                });
             });
         });
 
+
+        $(document).on('click','.btn-remove-form',function(e){
+            e.preventDefault();
+            $(this).parent().parent().remove();
+        });
 
         // validation error
         var has_errors = document.querySelector('#ERROR_COPY');
