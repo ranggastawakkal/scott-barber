@@ -42,31 +42,32 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Data Master
-    </div>
+    @if (auth()->user()->role == 'admin')
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Data Master
+        </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item {{ request()->is('employee') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('employee') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Karyawan</span></a>
-    </li>
-    <li class="nav-item {{ request()->is('package') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('package') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Paket Jasa</span></a>
-    </li>
-    <li class="nav-item {{ request()->is('item') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('item') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Barang</span></a>
-    </li>
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item {{ request()->is('employee') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('employee') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Karyawan</span></a>
+        </li>
+        <li class="nav-item {{ request()->is('package') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('package') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Paket Jasa</span></a>
+        </li>
+        <li class="nav-item {{ request()->is('item') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('item') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Barang</span></a>
+        </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
-
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+    @endif
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>

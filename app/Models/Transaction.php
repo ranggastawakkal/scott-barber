@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Item;
+use App\Models\User;
+use App\Models\Income;
+use App\Models\Expense;
+use App\Models\Package;
 use Nette\Schema\Expect;
+use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
@@ -45,6 +51,16 @@ class Transaction extends Model
     public function income()
     {
         return $this->hasMany(Income::class, 'transaction_id', 'id');
+    }
+
+    public function getFormattedCreatedAtAttribute()
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at'])->format('d-m-Y H:i:s');
+    }
+
+    public function getFormattedUpdatedAtAttribute()
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['updated_at'])->format('d-m-Y H:i:s');
     }
 
     public function expense()

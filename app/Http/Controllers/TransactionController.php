@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Package;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
@@ -41,6 +43,31 @@ class TransactionController extends Controller
     public function storeIncome(Request $request)
     {
         dd($request->all());
+        $rules = [
+            'package' => 'required|exists:packages,id',
+            'quantity' => 'required|numeric|min:1',
+            'subtotal' => 'required|numeric'
+        ];
+
+        $messages = [
+            'package.required' => 'Wajib memilih paket jasa!',
+            'package.exists' => 'Paket jasa tidak terdaftar!',
+            'quantity.required' => 'Jumlah wajib diisi!',
+            'quantity.numeric' => 'Jumlah wajib berupa angka!',
+            'quantity.min' => 'Jumlah minimal 1!',
+            'subtotal.required' => 'Subtotal wajib diisi!',
+            'subtotal.numeric' => 'Subtotal wajib berupa angka!'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput($request->all);
+        }
+
+        $latest_trx_code_number = Transaction::select('transaction_code')->latest()->first();
+        $next_trx_code_number = (int)substr($latest_trx_code_number, strpos($latest_trx_code_number, "-") + 1) + 1;
+        $trx_code = 'TRX-' . str_pad($next_trx_code_number, 5, '0', STR_PAD_LEFT);
     }
 
     /**

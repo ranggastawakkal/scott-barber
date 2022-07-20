@@ -96,7 +96,7 @@
                         <div id="add_form">
                             <div class="row mb-3">
                                 <div class="col-md-5">
-                                    <select class="form-control" name="package[]" id="package" required>
+                                    <select class="form-control" name="package[]" id="package">
                                         <option value="" disabled selected>--- Paket Jasa ---</option>
                                         @foreach ($packages as $package)
                                             <option value="{{ $package->id }}">{{ $package->name }}</option>
@@ -105,7 +105,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="quantity[]" id="quantity"
-                                        placeholder="Jumlah" value="1" min="1" required>
+                                        placeholder="Jumlah" value="1" min="1">
                                 </div>
                                 <div class="col-md-4">
                                     <div class="input-group">
@@ -114,7 +114,7 @@
                                         </div>
                                         <input type="text" class="form-control bg-white" aria-describedby="basic-addon1"
                                             id="subtotal" name="subtotal[]" value="{{ old('subtotal') }}"
-                                            placeholder="Sub Total" required readonly>
+                                            placeholder="Sub Total" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -206,7 +206,7 @@
                 $('#add_form').append(`
                     <div class="row mb-3">
                         <div class="col-md-5">
-                            <select class="form-control" name="package[]" id="package${i}" required>
+                            <select class="form-control" name="package[]" id="package${i}">
                                 <option value="" disabled selected>--- Paket Jasa ---</option>
                                 @foreach ($packages as $package)
                                     <option value="{{ $package->id }}">{{ $package->name }}</option>
@@ -215,7 +215,7 @@
                         </div>
                         <div class="col-md-2">
                             <input type="number" class="form-control" name="quantity[]" id="quantity${i}"
-                                placeholder="Jumlah" value="1" min="1" required>
+                                placeholder="Jumlah" value="1" min="1">
                         </div>
                         <div class="col-md-4">
                             <div class="input-group">
@@ -224,7 +224,7 @@
                                 </div>
                                 <input type="number" class="form-control bg-white" aria-describedby="basic-addon1"
                                     id="subtotal${i}" name="subtotal[]" value="{{ old('subtotal') }}"
-                                    placeholder="Sub Total" required readonly>
+                                    placeholder="Sub Total" readonly>
                             </div>
                         </div>
                         <div class="col-md-1">
