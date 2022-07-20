@@ -127,16 +127,17 @@
                                 <input type="email" class="form-control" id="email" name="email"
                                     value="{{ $employee->email }}" required>
                             </div>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                Password dan konfirmasi password hanya diisi apabila ingin diubah.
+                            </div>
                             <div class="mb-3">
                                 <label for="password" class="col-form-label font-weight-bold">Password</label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                    value="{{ $employee->password }}" required>
+                                <input type="password" class="form-control" id="password" name="password">
                             </div>
                             <div class="mb-3">
                                 <label for="password_confirmation" class="col-form-label font-weight-bold">Konfirmasi
                                     Password</label>
-                                <input type="password" class="form-control" id="password_confirmation"
-                                    name="password_confirmation" value="{{ $employee->password }}" required>
+                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
                             </div>
                     </div>
                     <div class="modal-footer">

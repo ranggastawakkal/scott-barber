@@ -14,7 +14,7 @@ class IncomeController extends Controller
      */
     public function index()
     {
-        return view('app.admin.income');
+        return view('app.pages.income');
     }
 
     /**

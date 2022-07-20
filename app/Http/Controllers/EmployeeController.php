@@ -20,7 +20,7 @@ class EmployeeController extends Controller
     {
         $employees = User::where('role', 'employee')->get();
 
-        return view('app.admin.employee', compact('employees'));
+        return view('app.pages.employee', compact('employees'));
     }
 
     /**
@@ -114,20 +114,14 @@ class EmployeeController extends Controller
     {
         $rules = [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'required|string|min:6|confirmed',
-            'password_confirmation' => 'required'
+            'email' => 'required|email|unique:users,email,' . $id
         ];
 
         $messages = [
             'name.required' => 'Nama karyawan wajib diisi!',
             'email.required' => 'Email wajib diisi!',
+            'email.email' => 'Format email salah!',
             'email.unique' => 'Email sudah terdaftar!',
-            'password.required' => 'Password wajib diisi!',
-            'password.string' => 'Password harus berupa string!',
-            'password.min' => 'Panjang password minimal 6 karakter!',
-            'password.confirmed' => 'Password dan konfirmasi password harus sama!',
-            'password_confirmation.required' => 'Konfirmasi password wajib diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -137,16 +131,35 @@ class EmployeeController extends Controller
         }
 
         $employee = User::find($id);
-        if ($request->password !== $employee->password) {
+        if (($request->password == null) && ($request->password_confirmation == null)) {
+            $update = $employee->update([
+                'name' => $request->name,
+                'email' => $request->email
+            ]);
+        } else {
+            $rules = [
+                'password' => 'required|string|min:6|confirmed',
+                'password_confirmation' => 'required'
+            ];
+    
+            $messages = [
+                'password.required' => 'Password wajib diisi!',
+                'password.string' => 'Password harus berupa string!',
+                'password.min' => 'Panjang password minimal 6 karakter!',
+                'password.confirmed' => 'Password dan konfirmasi password harus sama!',
+                'password_confirmation.required' => 'Konfirmasi password wajib diisi!',
+            ];
+    
+            $validator = Validator::make($request->all(), $rules, $messages);
+    
+            if ($validator->fails()) {
+                return back()->withErrors($validator);
+            }
+
             $update = $employee->update([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password)
-            ]);
-        } else {
-            $update = $employee->update([
-                'name' => $request->name,
-                'email' => $request->email
             ]);
         }
 
@@ -167,9 +180,9 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        $package = User::find($id)->delete();
+        $employee = User::find($id)->delete();
 
-        if ($package) {
+        if ($employee) {
             Alert::success('Berhasil', 'Data karyawan berhasil dihapus');
             return back();
         }

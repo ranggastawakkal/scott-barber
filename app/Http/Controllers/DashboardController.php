@@ -54,6 +54,6 @@ class DashboardController extends Controller
             $color = 'text-gray-800';
         }
 
-        return view('app.admin.dashboard', compact('income', 'expense', 'cash_per_month', 'color', 'date_per_month', 'income_per_day', 'packages', 'package_best_selling'));
+        return view('app.pages.dashboard', compact('income', 'expense', 'cash_per_month', 'color', 'date_per_month', 'income_per_day', 'packages', 'package_best_selling'));
     }
 }

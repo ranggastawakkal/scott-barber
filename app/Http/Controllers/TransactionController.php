@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Models\Item;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
@@ -20,8 +22,9 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::whereDate('created_at', date('Y-m-d'))->get();
         $packages = Package::all();
+        $items = Item::all();
 
-        return view('app.admin.daily-transactions', compact('transactions', 'packages'));
+        return view('app.pages.daily-transactions', compact('transactions', 'packages','items'));
     }
 
     /**
@@ -42,34 +45,100 @@ class TransactionController extends Controller
      */
     public function storeIncome(Request $request)
     {
-        dd($request->all());
         $rules = [
-            'package' => 'required|exists:packages,id',
-            'quantity' => 'required|numeric|min:1',
-            'subtotal' => 'required|numeric'
+            'packageIncome' => 'required|exists:packages,id',
+            'quantityIncome' => 'required|min:1',
+            'subtotalIncome' => 'required'
         ];
 
         $messages = [
-            'package.required' => 'Wajib memilih paket jasa!',
-            'package.exists' => 'Paket jasa tidak terdaftar!',
-            'quantity.required' => 'Jumlah wajib diisi!',
-            'quantity.numeric' => 'Jumlah wajib berupa angka!',
-            'quantity.min' => 'Jumlah minimal 1!',
-            'subtotal.required' => 'Subtotal wajib diisi!',
-            'subtotal.numeric' => 'Subtotal wajib berupa angka!'
+            'packageIncome.required' => 'Wajib memilih paket jasa!',
+            'packageIncome.exists' => 'Paket jasa tidak terdaftar!',
+            'quantityIncome.required' => 'Jumlah wajib diisi!',
+            'quantityIncome.min' => 'Jumlah minimal 1!',
+            'subtotalIncome.required' => 'Subtotal wajib diisi!'
         ];
-
+        
         $validator = Validator::make($request->all(), $rules, $messages);
-
+        
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($request->all);
         }
 
-        $latest_trx_code_number = Transaction::select('transaction_code')->latest()->first();
-        $next_trx_code_number = (int)substr($latest_trx_code_number, strpos($latest_trx_code_number, "-") + 1) + 1;
-        $trx_code = 'TRX-' . str_pad($next_trx_code_number, 5, '0', STR_PAD_LEFT);
+        $user_id = auth()->user()->id;
+        
+        $latest_trx_code = Transaction::select('transaction_code')->latest()->first();
+        $latest_trx_code_number = (int)substr($latest_trx_code, strpos($latest_trx_code, "-") + 1);
+        $next_trx_code_number = $latest_trx_code_number + 1;
+        $next_trx_code = 'TRX-' . str_pad($next_trx_code_number, 5, '0', STR_PAD_LEFT);
+
+        foreach($request->noIncome as $key => $no){
+            $transaction = Transaction::create([
+                'user_id' => $user_id,
+                'transaction_code' => $next_trx_code,
+                'type'=>'income',
+                'package_id'=> $request->packageIncome[$key],
+                'quantity'=>$request->quantityIncome[$key],
+                'total'=>$request->subtotalIncome[$key]
+            ]);
+        }
+        if ($transaction) {
+            Alert::success('Berhasil', 'Transaksi '.$next_trx_code.' berhasil ditambahkan');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Transaksi gagal ditambahkan');
+        return back();
     }
 
+    public function storeExpense(Request $request)
+    {
+        $rules = [
+            'itemExpense' => 'required|exists:items,id',
+            'quantityExpense' => 'required|min:1',
+            'subtotalExpense' => 'required'
+        ];
+
+        $messages = [
+            'itemExpense.required' => 'Wajib memilih paket jasa!',
+            'itemExpense.exists' => 'Paket jasa tidak terdaftar!',
+            'quantityExpense.required' => 'Jumlah wajib diisi!',
+            'quantityExpense.min' => 'Jumlah minimal 1!',
+            'subtotalExpense.required' => 'Subtotal wajib diisi!'
+        ];
+        
+        $validator = Validator::make($request->all(), $rules, $messages);
+        
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput($request->all);
+        }
+
+        $user_id = auth()->user()->id;
+        
+        $latest_trx_code = Transaction::select('transaction_code')->latest()->first();
+        $latest_trx_code_number = (int)substr($latest_trx_code, strpos($latest_trx_code, "-") + 1);
+        $next_trx_code_number = $latest_trx_code_number + 1;
+        $next_trx_code = 'TRX-' . str_pad($next_trx_code_number, 5, '0', STR_PAD_LEFT);
+
+        foreach($request->noExpense as $key => $no){
+            $transaction = Transaction::create([
+                'user_id' => $user_id,
+                'transaction_code' => $next_trx_code,
+                'type'=>'expense',
+                'item_id'=> $request->itemExpense[$key],
+                'quantity'=>$request->quantityExpense[$key],
+                'total'=>$request->subtotalExpense[$key]
+            ]);
+        }
+        if ($transaction) {
+            Alert::success('Berhasil', 'Transaksi '.$next_trx_code.' berhasil ditambahkan');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Transaksi gagal ditambahkan');
+        return back();
+    }
+    
     /**
      * Display the specified resource.
      *
@@ -99,9 +168,60 @@ class TransactionController extends Controller
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, $id)
     {
-        //
+        // dd($request->all());
+        $transaction = Transaction::find($id);
+
+        if($transaction->type == 'income'){
+            $type = "pemasukan";
+
+            $rules = [
+                'package_id' => 'required|exists:packages,id',
+                'quantity' => 'required|min:1',
+                'total' => 'required'
+            ];
+    
+            $messages = [
+                'package_id.required' => 'Wajib memilih paket jasa!',
+                'package_id.exists' => 'Paket jasa tidak terdaftar!',
+                'quantity.required' => 'Jumlah wajib diisi!',
+                'quantity.min' => 'Jumlah minimal 1!',
+                'total.required' => 'Subtotal wajib diisi!'
+            ];
+        } else{
+            $type = "pengeluaran";
+
+            $rules = [
+                'item_id' => 'required|exists:items,id',
+                'quantity' => 'required|min:1',
+                'total' => 'required'
+            ];
+    
+            $messages = [
+                'item_id.required' => 'Wajib memilih paket jasa!',
+                'item_id.exists' => 'Paket jasa tidak terdaftar!',
+                'quantity.required' => 'Jumlah wajib diisi!',
+                'quantity.min' => 'Jumlah minimal 1!',
+                'total.required' => 'Subtotal wajib diisi!'
+            ];
+        }
+        
+        $validator = Validator::make($request->all(), $rules, $messages);
+    
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput($request->all);
+        }
+
+        $update = $transaction->update($request->all());
+        
+        if($update){
+            Alert::success('Berhasil', 'Data '.$type.' berhasil diubah');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Data '.$type.' gagal diubah');
+        return back();
     }
 
     /**
@@ -110,9 +230,17 @@ class TransactionController extends Controller
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(Transaction $transaction, $id)
     {
-        //
+        $transaction = Transaction::find($id)->delete();
+
+        if ($transaction) {
+            Alert::success('Berhasil', 'Data transaksi berhasil dihapus');
+            return back();
+        }
+
+        Alert::error('Gagal', 'Data transaksi gagal dihapus');
+        return back();
     }
 
     public function getPackagePrice(Request $request, $id)

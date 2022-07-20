@@ -1,5 +1,5 @@
 @extends('app/components/main')
-@section('title', 'Transaksi Hari Ini')
+@section('title', 'Jurnal Keuangan')
 
 @section('content')
     <div class="row">
@@ -7,18 +7,8 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-dark">
-                        Transaksi Hari Ini ({{ date('d M Y') }})
+                        Jurnal Keuangan
                     </h6>
-                    <div>
-                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                            data-bs-target="#modalTambahPemasukan">
-                            <i class="fas fa-plus"></i> Tambah Pemasukan
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                            data-bs-target="#modalTambahPengeluaran">
-                            <i class="fas fa-plus"></i> Tambah Pengeluaran
-                        </button>
-                    </div>
                 </div>
                 @if ($errors->count() > 0)
                     <div id="ERROR_COPY" style="display: none;">
@@ -61,7 +51,7 @@
                                         @endif
                                         <td>{{ $transaction->quantity }}</td>
                                         <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
-                                        <td>{{ $transaction->updated_at }}</td>
+                                        <td>{{ $transaction->getFormattedUpdatedAtAttribute() }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
                                                 data-bs-target="#modalUbahData{{ $transaction->id }}"
@@ -79,48 +69,55 @@
         </div>
     </div>
 
-    {{-- modal add data --}}
-    <div class="modal fade" id="modalTambahPemasukan" tabindex="-1" aria-labelledby="modalTambahPemasukanLabel"
+    {{-- modal edit data --}}
+    @foreach ($transactions as $transaction)
+    <div class="modal fade" id="modalUbahData{{ $transaction->id }}" tabindex="-1" aria-labelledby="modalUbahDataLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahPemasukanLabel">Tambah Pemasukan</h5>
+                    <h5 class="modal-title" id="modalUbahDataLabel">Ubah {{ $transaction->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}</h5>
                     <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route('transactions.income.store') }}">
+                    <form method="POST" action="{{ route('transactions.update',$transaction->id) }}">
                         @csrf
-                        <div id="add_form">
+                        <div id="add_form_pengeluaran">
                             <div class="row mb-3">
                                 <div class="col-md-5">
-                                    <select class="form-control" name="package[]" id="package">
-                                        <option value="" disabled selected>--- Paket Jasa ---</option>
+                                    @if ($transaction->type == 'income')
+                                    <select class="form-control" name="package_id" id="packageIncome{{ $transaction->id }}"" required>
+                                        <option value="" selected disabled>--- Paket Jasa ---</option>
+                                        <option value="{{ $transaction->package_id }}" selected hidden>{{ $transaction->package->name }}</option>
                                         @foreach ($packages as $package)
                                             <option value="{{ $package->id }}">{{ $package->name }}</option>
                                         @endforeach
                                     </select>
+                                    @else    
+                                        <select class="form-control" name="item_id" required>
+                                            <option value="" selected disabled>--- Barang ---</option>
+                                            <option value="{{ $transaction->item_id }}" selected hidden>{{ $transaction->item->name }}</option>
+                                            @foreach ($items as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" class="form-control" name="quantity[]" id="quantity"
-                                        placeholder="Jumlah" value="1" min="1">
+                                    <input type="number" class="form-control" name="quantity" id="{{ $transaction->type == 'income' ? 'quantityIncome'.$transaction->id : 'quantity' }}"
+                                        placeholder="Jumlah" value="{{ $transaction->quantity }}" min="1" required>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text font-weight-bold" id="basic-addon1">Rp.</span>
                                         </div>
-                                        <input type="text" class="form-control bg-white" aria-describedby="basic-addon1"
-                                            id="subtotal" name="subtotal[]" value="{{ old('subtotal') }}"
-                                            placeholder="Sub Total" readonly>
+                                        <input type="number" class="form-control bg-white" aria-describedby="basic-addon1"
+                                            id="{{ $transaction->type == 'income' ? 'subtotalIncome'.$transaction->id : 'subtotal' }}" name="total" value="{{ $transaction->total }}"
+                                            placeholder="Sub Total" required {{ $transaction->type == 'income' ? 'readonly' : '' }}>
                                     </div>
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" id="btn_add_form" class="btn btn-outline-info">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -134,30 +131,55 @@
             </div>
         </div>
     </div>
-    {{-- end of modal add data --}}
+    @endforeach
+    {{-- end of modal edit data --}}
 @endsection
 
 @section('javascript')
-    <script type="text/javascript">
-        // Call the dataTables jQuery plugin
+    <script>
         $(document).ready(function() {
             var table = $('#dataTable').DataTable({
+
+                buttons: ['csv', 'print', 'excel', 'pdf', 'colvis'],
+                dom: "<'row'<'col-md-3'l><'col-md-5'B><'col-md-4'f>>" +
+                    "<'row'<'col-md-12'tr>>" +
+                    "<'row'<'col-md-5'i><'col-md-7'p>>",
                 lengthMenu: [
                     [5, 10, 25, 50, 100, -1],
                     [5, 10, 25, 50, 100, "All"]
                 ],
-                "language": {
+
+                fixedColumns: true,
+
+                language: {
+
                     "search": "Cari:",
+
                     "lengthMenu": "Tampilkan _MENU_ baris",
+
                     "zeroRecords": "Data tidak ditemukan",
+
                     "info": "Halaman _PAGE_ dari _PAGES_",
+
                     "infoEmpty": "Tidak ada data",
+
                     "infoFiltered": "(pencarian dari _MAX_ data)",
+
+                    "buttons": {
+                        "colvis": "Kolom"
+                    }
+
                 },
+
                 responsive: true,
+
                 stateSave: true, // keep paging
-                "scrollX": true
+
+                scrollX: true
             });
+
+            table.buttons().container()
+                .appendTo('#dataTable_wrapper .col-md-5:eq(0)');
 
             $('.btn-delete').on('click', function(event) {
                 event.preventDefault();
@@ -176,109 +198,50 @@
                 })
             });
 
-            $('#package').on('change',function(e){
+            @foreach ($transactions as $transaction)
+            $('#packageIncome{{ $transaction->id }}').on('change',function(e){
                 e.preventDefault();
                 var id = $(this).val();
                 $.ajax({
                     url: '/daily-transactions/get-package-price/' + id,
                     method: 'GET',
                     success: function(response){
-                        var quantity = $('#quantity');
-                        var subtotal = $('#subtotal');
+                        var quantity = $('#quantityIncome{{ $transaction->id }}');
+                        var subtotal = $('#subtotalIncome{{ $transaction->id }}');
                         var subtotalVal = quantity.val() * response.replace(".", "");
 
                         subtotal.val(subtotalVal);
-
-                        console.log(response);
-                        console.log(quantity.val());
-                        console.log(subtotal.val());
-
+                        
                         quantity.on('change',function(){
                             subtotal.val(quantity.val() * response.replace(".", ""));
                         });
                     }
                 });
             });
+            @endforeach
 
-            i = 1;
-            $('#btn_add_form').on('click', function(e) {
+            @foreach ($transactions as $transaction)
+            $('#quantityIncome{{ $transaction->id }}').on('change',function(e){
                 e.preventDefault();
-                $('#add_form').append(`
-                    <div class="row mb-3">
-                        <div class="col-md-5">
-                            <select class="form-control" name="package[]" id="package${i}">
-                                <option value="" disabled selected>--- Paket Jasa ---</option>
-                                @foreach ($packages as $package)
-                                    <option value="{{ $package->id }}">{{ $package->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="number" class="form-control" name="quantity[]" id="quantity${i}"
-                                placeholder="Jumlah" value="1" min="1">
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text font-weight-bold" id="basic-addon1">Rp.</span>
-                                </div>
-                                <input type="number" class="form-control bg-white" aria-describedby="basic-addon1"
-                                    id="subtotal${i}" name="subtotal[]" value="{{ old('subtotal') }}"
-                                    placeholder="Sub Total" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" id="btn_add_form" class="btn btn-outline-danger btn-remove-form">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                `);
+                var id = $('#packageIncome{{ $transaction->id }}').val();
+                $.ajax({
+                    url: '/daily-transactions/get-package-price/' + id,
+                    method: 'GET',
+                    success: function(response){
+                        var package = $('#packageIncome{{ $transaction->id }}');
+                        var quantity = $('#quantityIncome{{ $transaction->id }}');
+                        var subtotal = $('#subtotalIncome{{ $transaction->id }}');
+                        var subtotalVal = quantity.val() * response.replace(".", "");
 
-                $('#package'+i).on('change',function(e){
-                    e.preventDefault();
-                    var id = $(this).val();
-                    $.ajax({
-                        url: '/daily-transactions/get-package-price/' + id,
-                        method: 'GET',
-                        success: function(response){
-                            var quantity = $('#quantity'+i);
-                            var subtotal = $('#subtotal'+i);
-                            var subtotalVal = quantity.val() * response.replace(".", "");
+                        subtotal.val(subtotalVal);
 
-                            subtotal.val(subtotalVal);
-
-                            console.log(i);
-                            console.log(response);
-                            console.log(quantity.val());
-                            console.log(subtotal.val());
-
-                            quantity.on('change',function(){
-                                subtotal.val(quantity.val() * response.replace(".", ""));
-                            });
-                        }
-                    });
+                        package.on('change',function(){
+                            subtotal.val(quantity.val() * response.replace(".", ""));
+                        });
+                    }
                 });
-            });
-        });
-
-
-        $(document).on('click','.btn-remove-form',function(e){
-            e.preventDefault();
-            $(this).parent().parent().remove();
-        });
-
-        // validation error
-        var has_errors = document.querySelector('#ERROR_COPY');
-
-        if (has_errors !== null) {
-            Swal.fire({
-                title: 'Gagal',
-                icon: 'error',
-                html: jQuery('#ERROR_COPY').html(),
-                showCloseButton: true
             })
-        }
-        // end of validation error
+            @endforeach
+        });
     </script>
 @endsection

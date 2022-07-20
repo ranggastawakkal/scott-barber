@@ -30,13 +30,13 @@
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item {{ request()->is('daily-transactions') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('daily-transactions') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fa-solid fa-money-bill-transfer"></i>
             <span>Transaksi Harian</span></a>
     </li>
     <li class="nav-item {{ request()->is('journal') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('journal') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Jurnal</span></a>
+            <i class="fas fa-fw fa-book-open"></i>
+            <span>Jurnal Keuangan</span></a>
     </li>
 
     <!-- Divider -->
@@ -51,17 +51,17 @@
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item {{ request()->is('employee') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('employee') }}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fas fa-fw fa-users"></i>
                 <span>Karyawan</span></a>
         </li>
         <li class="nav-item {{ request()->is('package') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('package') }}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fa-solid fa-hand-holding-heart"></i>
                 <span>Paket Jasa</span></a>
         </li>
         <li class="nav-item {{ request()->is('item') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('item') }}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fa-solid fa-box"></i>
                 <span>Barang</span></a>
         </li>
 

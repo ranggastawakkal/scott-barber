@@ -29,6 +29,18 @@ Route::get('/login', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::prefix('daily-transactions')->group(function () {
+        Route::get('/', [TransactionController::class, 'index'])->name('daily-transactions');
+        Route::post('/storeIncome', [TransactionController::class, 'storeIncome'])->name('transactions.income.store');
+        Route::post('/storeExpense', [TransactionController::class, 'storeExpense'])->name('transactions.expense.store');
+        Route::get('/get-package-price/{id}', [TransactionController::class, 'getPackagePrice'])->name('transactions.get-package-price');
+        Route::post('/update/{id}', [TransactionController::class, 'update'])->name('transactions.update');
+        Route::get('/destroy/{id}', [TransactionController::class, 'destroy'])->name('daily-transactions.destroy');
+    });
+    Route::get('/journal', [JournalController::class, 'index'])->name('journal');
+});
+
+Route::middleware(['auth','RoleCheck:admin'])->group(function () {
     Route::prefix('package')->group(function () {
         Route::get('/', [PackageController::class, 'index'])->name('package');
         Route::post('/store', [PackageController::class, 'store'])->name('package.store');
@@ -47,26 +59,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
         Route::get('/destroy/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
     });
-    Route::prefix('daily-transactions')->group(function () {
-        Route::get('/', [TransactionController::class, 'index'])->name('daily-transactions');
-        Route::post('/store', [TransactionController::class, 'storeIncome'])->name('transactions.income.store');
-        Route::get('/get-package-price/{id}', [TransactionController::class, 'getPackagePrice'])->name('transactions.get-package-price');
-        Route::get('/destroy/{id}', [TransactionController::class, 'destroy'])->name('daily-transactions.destroy');
-    });
-    Route::get('/journal', [JournalController::class, 'index'])->name('journal');
 });
-
-// Route::middleware(['auth:admin'])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('app.admin.dashboard');
-//     });
-// });
-
-// Route::middleware(['auth:employee'])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('app.employee.dashboard');
-//     });
-// });
 
 Route::get('/welcome', function () {
     return view('welcome');

@@ -18,7 +18,7 @@ class PackageController extends Controller
     public function index()
     {
         $packages = Package::all();
-        return view('app.admin.package', compact('packages'));
+        return view('app.pages.package', compact('packages'));
     }
 
     /**
