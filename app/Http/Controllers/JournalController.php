@@ -11,7 +11,7 @@ class JournalController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::all();
+        $transactions = Transaction::orderBy('created_at','desc')->get();
         $items = Item::all();
         $packages = Package::all();
         return view('app.pages.journal', compact('transactions','items','packages'));

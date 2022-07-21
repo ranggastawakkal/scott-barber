@@ -56,12 +56,12 @@
         </li>
         <li class="nav-item {{ request()->is('package') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('package') }}">
-                <i class="fa-solid fa-hand-holding-heart"></i>
+                <i class="fa-solid fa-fw fa-hand-holding-heart"></i>
                 <span>Paket Jasa</span></a>
         </li>
         <li class="nav-item {{ request()->is('item') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('item') }}">
-                <i class="fa-solid fa-box"></i>
+                <i class="fa-solid fa-fw fa-box"></i>
                 <span>Barang</span></a>
         </li>
 

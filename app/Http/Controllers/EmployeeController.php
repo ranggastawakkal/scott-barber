@@ -18,7 +18,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = User::where('role', 'employee')->get();
+        $employees = User::where('role', 'employee')->orderBy('created_at','desc')->get();
 
         return view('app.pages.employee', compact('employees'));
     }

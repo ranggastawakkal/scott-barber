@@ -20,7 +20,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::whereDate('created_at', date('Y-m-d'))->get();
+        $transactions = Transaction::whereDate('created_at', date('Y-m-d'))->orderBy('created_at','desc')->get();
         $packages = Package::all();
         $items = Item::all();
 
@@ -129,6 +129,12 @@ class TransactionController extends Controller
                 'quantity'=>$request->quantityExpense[$key],
                 'total'=>$request->subtotalExpense[$key]
             ]);
+
+            $item = Item::where('id',$request->itemExpense[$key])->first();
+            $stock = $item->stock + $request->quantityExpense[$key];
+            $item->update([
+                'stock' => $stock
+            ]);
         }
         if ($transaction) {
             Alert::success('Berhasil', 'Transaksi '.$next_trx_code.' berhasil ditambahkan');
@@ -189,6 +195,19 @@ class TransactionController extends Controller
                 'quantity.min' => 'Jumlah minimal 1!',
                 'total.required' => 'Subtotal wajib diisi!'
             ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+    
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput($request->all);
+            }
+
+            $update = $transaction->update($request->all());
+            
+            if($update){
+                Alert::success('Berhasil', 'Data pemasukan berhasil diubah');
+                return back();
+            }
         } else{
             $type = "pengeluaran";
 
@@ -205,19 +224,25 @@ class TransactionController extends Controller
                 'quantity.min' => 'Jumlah minimal 1!',
                 'total.required' => 'Subtotal wajib diisi!'
             ];
-        }
-        
-        $validator = Validator::make($request->all(), $rules, $messages);
-    
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput($request->all);
-        }
 
-        $update = $transaction->update($request->all());
-        
-        if($update){
-            Alert::success('Berhasil', 'Data '.$type.' berhasil diubah');
-            return back();
+            $validator = Validator::make($request->all(), $rules, $messages);
+    
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput($request->all);
+            }
+
+            $update = $transaction->update($request->all());
+
+            $item = Item::where('id',$request->item_id)->first();
+            $stock = $item->stock - $transaction->quantity + $request->quantity;
+            $item->update([
+                'stock' => $stock
+            ]);
+            
+            if($update){
+                Alert::success('Berhasil', 'Data pengeluaran berhasil diubah');
+                return back();
+            }
         }
 
         Alert::error('Gagal', 'Data '.$type.' gagal diubah');
