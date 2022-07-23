@@ -17,9 +17,11 @@
 <script type="text/javascript"
     src="https://datatables.net/release-datatables/extensions/FixedColumns/js/dataTables.fixedColumns.js"></script>
 <script type="text/javascript" src="https://datatables.net/release-datatables/media/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="https://datatables.net/release-datatables/media/js/dataTables.bootstrap4.js">
-</script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://datatables.net/release-datatables/media/js/dataTables.bootstrap4.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/datetime/1.1.2/js/dataTables.dateTime.min.js"></script>
 
 <script src="{{ asset('vendor/jquery-ui/external/jquery/jquery.js') }}"></script>
 <script type="text/javascript" src="{{ asset('vendor/jquery-ui/jquery-ui.js') }}"></script>

@@ -33,11 +33,13 @@
             <i class="fa-solid fa-money-bill-transfer"></i>
             <span>Transaksi Harian</span></a>
     </li>
+    @if (auth()->user()->role == 'admin')
     <li class="nav-item {{ request()->is('journal') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('journal') }}">
             <i class="fas fa-fw fa-book-open"></i>
             <span>Jurnal Keuangan</span></a>
     </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider">

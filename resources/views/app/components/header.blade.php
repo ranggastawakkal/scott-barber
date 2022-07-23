@@ -24,14 +24,12 @@
     <link href="{{ asset('vendor/sb-admin-2/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
     <!-- DataTables -->
-    <link rel="stylesheet" type="text/css"
-        href="https://datatables.net/release-datatables/extensions/FixedColumns/css/fixedColumns.bootstrap4.css" />
-    <link rel="stylesheet" type="text/css"
-        href="https://datatables.net/release-datatables/media/css/dataTables.bootstrap4.css" />
-    <link href="{{ asset('vendor/datatables/DataTables-1.10.25/css/dataTables.bootstrap.min.css') }}"
-        rel="stylesheet">
-    <link href="{{ asset('vendor/datatables/DataTables-1.10.25/css/dataTables.bootstrap5.min.css') }}"
-        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://datatables.net/release-datatables/extensions/FixedColumns/css/fixedColumns.bootstrap4.css" />
+    {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" /> --}}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.1.2/css/dataTables.dateTime.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://datatables.net/release-datatables/media/css/dataTables.bootstrap4.css" />
+    <link href="{{ asset('vendor/datatables/DataTables-1.10.25/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/datatables/DataTables-1.10.25/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/datatables/Buttons-1.7.1/css/buttons.bootstrap5.min.css') }}" rel="stylesheet">
 
     <!-- Sweet Alert 2 -->

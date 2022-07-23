@@ -51,7 +51,7 @@
                                         @endif
                                         <td>{{ $transaction->quantity }}</td>
                                         <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
-                                        <td>{{ $transaction->getFormattedUpdatedAtAttribute() }}</td>
+                                        <td>{{ $transaction->getFormattedCreatedAtAttribute() }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
                                                 data-bs-target="#modalUbahData{{ $transaction->id }}"

@@ -37,10 +37,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update/{id}', [TransactionController::class, 'update'])->name('transactions.update');
         Route::get('/destroy/{id}', [TransactionController::class, 'destroy'])->name('daily-transactions.destroy');
     });
-    Route::get('/journal', [JournalController::class, 'index'])->name('journal');
 });
 
 Route::middleware(['auth','RoleCheck:admin'])->group(function () {
+    Route::get('/journal', [JournalController::class, 'index'])->name('journal');
     Route::prefix('package')->group(function () {
         Route::get('/', [PackageController::class, 'index'])->name('package');
         Route::post('/store', [PackageController::class, 'store'])->name('package.store');
