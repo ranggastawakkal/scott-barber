@@ -2,9 +2,10 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
-        <div class="sidebar-brand-icon rotate-n-15">
+        {{-- <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-cut"></i>
-        </div>
+        </div> --}}
+        <img src="{{ asset('img/logo.jpeg') }}" alt="logo" class="sidebar-logo">
         <div class="sidebar-brand-text mx-3">Scott Barber</div>
     </a>
 
@@ -33,11 +34,13 @@
             <i class="fa-solid fa-money-bill-transfer"></i>
             <span>Transaksi Harian</span></a>
     </li>
+    @if (auth()->user()->role == 'admin')
     <li class="nav-item {{ request()->is('journal') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('journal') }}">
             <i class="fas fa-fw fa-book-open"></i>
             <span>Jurnal Keuangan</span></a>
     </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider">
