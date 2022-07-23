@@ -2,9 +2,10 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
-        <div class="sidebar-brand-icon rotate-n-15">
+        {{-- <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-cut"></i>
-        </div>
+        </div> --}}
+        <img src="{{ asset('img/logo.jpeg') }}" alt="logo" class="sidebar-logo">
         <div class="sidebar-brand-text mx-3">Scott Barber</div>
     </a>
 

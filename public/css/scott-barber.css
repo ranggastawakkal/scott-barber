@@ -1,0 +1,4 @@
+.sidebar-logo {
+    height: 50px;
+    clip-path: circle();
+}

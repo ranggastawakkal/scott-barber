@@ -140,7 +140,45 @@
         $(document).ready(function() {
             var table = $('#dataTable').DataTable({
 
-                buttons: ['csv', 'print', 'excel', 'pdf', 'colvis'],
+                buttons: [
+                    {
+                        extend:'csv',
+                        text:'CSV',
+                        className:'btn btn-success',
+                        exportOptions: {
+                            columns: 'th:not(:last-child)'
+                        }
+                    }, 
+                    {
+                        extend:'print',
+                        text:'Print',
+                        className:'btn btn-success',
+                        exportOptions: {
+                            columns: 'th:not(:last-child)'
+                        }
+                    },
+                    {
+                        extend:'excel',
+                        text:'Excel',
+                        className:'btn btn-success',
+                        exportOptions: {
+                            columns: 'th:not(:last-child)'
+                        }
+                    },
+                    {
+                        extend:'pdf',
+                        text:'PDF',
+                        className:'btn btn-success',
+                        exportOptions: {
+                            columns: 'th:not(:last-child)'
+                        }
+                    },
+                    {
+                        extend:'colvis',
+                        text:'Kolom',
+                        className:'btn btn-success',
+                    },
+                ],
                 dom: "<'row'<'col-md-3'l><'col-md-5'B><'col-md-4'f>>" +
                     "<'row'<'col-md-12'tr>>" +
                     "<'row'<'col-md-5'i><'col-md-7'p>>",
