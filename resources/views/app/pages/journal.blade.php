@@ -18,6 +18,28 @@
                     </div>
                 @endif
                 <div class="card-body">
+                    <div class="row justify-content-center">
+
+                        <table class="mb-2" border="0" cellspacing="5" cellpadding="5">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input class="form-control form-control-sm" type="text" id="min" name="min" placeholder="Tanggal awal">
+                                    </td>
+                                    <td>s/d</td>
+                                    <td>
+                                        <input class="form-control form-control-sm" type="text" id="max" name="max" placeholder="Tanggal akhir">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success" id="search_date_range">Cari</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning" id="reset_date_range">Reset</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover display nowrap" id="dataTable" width="100%" cellspacing="0">
                             <thead class="text-center">
@@ -31,7 +53,8 @@
                                     <th>Jumlah</th>
                                     <th>Nominal</th>
                                     <th>Waktu</th>
-                                    <th>Aksi</th>
+                                    <th class="notexport" style="display: none;">Waktu</th>
+                                    <th class="notexport">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,6 +75,7 @@
                                         <td>{{ $transaction->quantity }}</td>
                                         <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
                                         <td>{{ $transaction->getFormattedCreatedAtAttribute() }}</td>
+                                        <td style="display: none;">{{ $transaction->created_at }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
                                                 data-bs-target="#modalUbahData{{ $transaction->id }}"
@@ -137,7 +161,45 @@
 
 @section('javascript')
     <script>
+        // var minDate, maxDate;
+ 
+        // Custom filtering function which will search data in column four between two values
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+                let min = moment($('#min').val()).isValid() ?
+                    new Date( $('#min').val() ).setUTCHours(0,0,0,0) :
+                    null;
+
+                let max = moment($('#max').val()).isValid() ?
+                    new Date( $('#max').val() ).setUTCHours(23,59,59,999):
+                    null;
+                var date = new Date( data[9] );
+        
+                if (
+                    ( min === null && max === null ) ||
+                    ( min === null && date <= max ) ||
+                    ( min <= date   && max === null ) ||
+                    ( min <= date   && date <= max )
+                ) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
         $(document).ready(function() {
+            // Create date inputs
+            minDate = new DateTime($('#min'), {
+                // format: 'D-MM-YYYY hh:mm:ss'
+                format: 'YYYY-MM-D'
+                // format: 'MMMM Do YYYY'
+            });
+            maxDate = new DateTime($('#max'), {
+                // format: 'D-MM-YYYY hh:mm:ss'
+                format: 'YYYY-MM-D'
+                // format: 'MMMM Do YYYY'
+            });
+
             var table = $('#dataTable').DataTable({
 
                 buttons: [
@@ -146,7 +208,7 @@
                         text:'CSV',
                         className:'btn btn-success',
                         exportOptions: {
-                            columns: 'th:not(:last-child)'
+                            columns: 'th:not(.notexport)'
                         }
                     }, 
                     {
@@ -154,7 +216,7 @@
                         text:'Print',
                         className:'btn btn-success',
                         exportOptions: {
-                            columns: 'th:not(:last-child)'
+                            columns: 'th:not(.notexport)'
                         }
                     },
                     {
@@ -162,7 +224,7 @@
                         text:'Excel',
                         className:'btn btn-success',
                         exportOptions: {
-                            columns: 'th:not(:last-child)'
+                            columns: 'th:not(.notexport)'
                         }
                     },
                     {
@@ -170,7 +232,7 @@
                         text:'PDF',
                         className:'btn btn-success',
                         exportOptions: {
-                            columns: 'th:not(:last-child)'
+                            columns: 'th:not(.notexport)'
                         }
                     },
                     {
@@ -214,6 +276,17 @@
                 stateSave: true, // keep paging
 
                 scrollX: true
+            });
+
+            // Refilter the table
+            $('#search_date_range').on('click', function () {
+                table.draw();
+            });
+            
+            $('#reset_date_range').on('click', function () {
+                $('#min').val('');
+                $('#max').val('');
+                table.draw();
             });
 
             table.buttons().container()

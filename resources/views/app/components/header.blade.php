@@ -22,7 +22,6 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ asset('vendor/sb-admin-2/css/sb-admin-2.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/scott-barber.css') }}" rel="stylesheet">
 
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://datatables.net/release-datatables/extensions/FixedColumns/css/fixedColumns.bootstrap4.css" />
