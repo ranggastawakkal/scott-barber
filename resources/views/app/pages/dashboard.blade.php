@@ -125,7 +125,7 @@
         const now = new Date();
 
         // Format date as in mm/dd/aaaa hh:ii:ss
-        const dateTime = zeroFill(now.getUTCDate()) + ' ' + monthNames[now.getMonth() + 1] + ' ' + now
+        const dateTime = zeroFill(now.getUTCDate()) + ' ' + monthNames[now.getMonth()] + ' ' + now
             .getFullYear() + ' | ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' +
             zeroFill(
                 now.getSeconds());
