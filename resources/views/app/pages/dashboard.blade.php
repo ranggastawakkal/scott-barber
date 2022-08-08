@@ -65,7 +65,7 @@
 <div class="row">
 
     <!-- Area Chart -->
-    <div class="col-xl-8 col-lg-7">
+    <div class="col-md-12">
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -76,12 +76,16 @@
                 <div class="chart-area">
                     <canvas id="myAreaChart"></canvas>
                 </div>
+                <div class="pt-2">
+                    <h5 id="month-year" class="text-center"></h5>
+                </div>
             </div>
         </div>
     </div>
-
+</div>
+<div class="row">
     <!-- Pie Chart -->
-    <div class="col-xl-4 col-lg-5">
+    <div class="col-md-12">
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -90,12 +94,12 @@
             <!-- Card Body -->
             <div class="card-body">
                 <div class="text-center small">
-                    @foreach ($package_best_selling as $pbs)
+                    {{-- @foreach ($package_best_selling as $pbs)
                     <span class="mr-2">
                         {{ $loop->iteration }}. {{ $pbs->package->name }}
                     </span>
                     @endforeach
-                    <hr>
+                    <hr> --}}
                     <div class="chart-pie pb-2">
                         <canvas id="myPieChart"></canvas>
                     </div>
@@ -130,10 +134,13 @@
             zeroFill(
                 now.getSeconds());
 
+        const monthAndYear = monthNames[now.getMonth()] + ' ' + now.getFullYear();
+
         // const monthYear = monthNames[now.getMonth() + 1] + ' ' + now.getFullYear();
 
         // Display the date and time on the screen using div#date-time
         document.getElementById('date-time').innerHTML = dateTime;
+        document.getElementById('month-year').innerHTML = monthAndYear;
         // document.getElementById('month-year').innerHTML = monthYear;
     }, 1000);
     // END OF REALTIME DATETIME
@@ -270,7 +277,7 @@
 
     var pieChart = document.getElementById("myPieChart");
     var myPieChart = new Chart(pieChart, {
-        type: 'doughnut',
+        type: 'bar',
         data: {
             labels: [
                     @foreach ($packages as $package)
@@ -284,31 +291,102 @@
                             {{ $pbs->qty }},
                     @endforeach
                 ],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#e74a3b', '#f6c23e', '#f8f9fc',
-                    '#5a5c69'
+                backgroundColor: ['rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 205, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(201, 203, 207, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 205, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(201, 203, 207, 0.2)'
                 ],
-                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#e02d1b', '#f4b619',
-                    '#dde2f1', '#484a54'
+                borderColor: ['rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)',
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)'
                 ],
-                hoverBorderColor: "rgba(234, 236, 244, 1)",
+                borderWidth: 1
             }],
         },
         options: {
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'date'
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 7
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        // Include a dollar rupiah in the ticks
+                            callback: function(value, index, values) {
+                            return 'Rp. ' + number_format(value);
+                        }
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }],
+            },
             tooltips: {
                 backgroundColor: "rgb(255,255,255)",
                 bodyFontColor: "#858796",
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
                 borderColor: '#dddfeb',
                 borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                caretPadding: 10,
+                displayColors:false,
+                callbacks: {
+                        label: function(tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        return datasetLabel + 'Jumlah transaksi : ' + number_format(tooltipItem.yLabel);
+                    }
+                }
             },
             legend: {
                 display: false
             },
-            cutoutPercentage: 80,
+            scales:{
+                beginAtZero: true
+            }
         },
     });
 

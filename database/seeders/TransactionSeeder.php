@@ -24,8 +24,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => null,
                 'quantity' => 1,
                 'total' => 25000,
-                'created_at' => "2022-07-11 19:12:06",
-                'updated_at' => "2022-07-11 19:12:06"
+                'created_at' => "2022-08-01 19:12:06",
+                'updated_at' => "2022-08-01 19:12:06"
             ],
             [
                 'user_id' => 3,
@@ -35,8 +35,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => null,
                 'quantity' => 1,
                 'total' => 20000,
-                'created_at' => "2022-07-11 19:12:06",
-                'updated_at' => "2022-07-11 19:12:06"
+                'created_at' => "2022-08-01 19:12:06",
+                'updated_at' => "2022-08-01 19:12:06"
             ],
             [
                 'user_id' => 4,
@@ -46,8 +46,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => 1,
                 'quantity' => 1,
                 'total' => 5000,
-                'created_at' => "2022-07-12 19:12:06",
-                'updated_at' => "2022-07-12 19:12:06"
+                'created_at' => "2022-08-02 19:12:06",
+                'updated_at' => "2022-08-02 19:12:06"
             ],
             [
                 'user_id' => 4,
@@ -57,8 +57,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => 2,
                 'quantity' => 1,
                 'total' => 10000,
-                'created_at' => "2022-07-12 19:12:06",
-                'updated_at' => "2022-07-12 19:12:06"
+                'created_at' => "2022-08-02 19:12:06",
+                'updated_at' => "2022-08-02 19:12:06"
             ],
             [
                 'user_id' => 5,
@@ -68,8 +68,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => null,
                 'quantity' => 2,
                 'total' => 80000,
-                'created_at' => "2022-07-13 19:12:06",
-                'updated_at' => "2022-07-13 19:12:06"
+                'created_at' => "2022-08-03 19:12:06",
+                'updated_at' => "2022-08-03 19:12:06"
             ],
             [
                 'user_id' => 5,
@@ -79,8 +79,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => null,
                 'quantity' => 3,
                 'total' => 15000,
-                'created_at' => "2022-07-14 19:12:06",
-                'updated_at' => "2022-07-14 19:12:06"
+                'created_at' => "2022-08-04 19:12:06",
+                'updated_at' => "2022-08-04 19:12:06"
             ],
             [
                 'user_id' => 5,
@@ -90,8 +90,8 @@ class TransactionSeeder extends Seeder
                 'item_id' => null,
                 'quantity' => 1,
                 'total' => 20000,
-                'created_at' => "2022-07-15 19:12:06",
-                'updated_at' => "2022-07-15 19:12:06"
+                'created_at' => "2022-08-05 19:12:06",
+                'updated_at' => "2022-08-05 19:12:06"
             ],
         ];
 
