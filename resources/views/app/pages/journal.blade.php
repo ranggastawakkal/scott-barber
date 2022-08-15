@@ -24,17 +24,17 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <input class="form-control form-control-sm" type="text" id="min" name="min" placeholder="Tanggal awal">
+                                        <input class="form-control form-control-sm" type="text" id="min" name="min" placeholder="Tanggal awal" required>
                                     </td>
                                     <td>s/d</td>
                                     <td>
-                                        <input class="form-control form-control-sm" type="text" id="max" name="max" placeholder="Tanggal akhir">
+                                        <input class="form-control form-control-sm" type="text" id="max" name="max" placeholder="Tanggal akhir" required>
                                     </td>
                                     <td>
                                         <button class="btn btn-success" id="search_date_range">Cari</button>
                                     </td>
                                     <td>
-                                        <button class="btn btn-warning" id="reset_date_range">Reset</button>
+                                        <button type="reset" class="btn btn-warning" id="reset_date_range">Reset</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -51,7 +51,8 @@
                                     <th>Paket Jasa</th>
                                     <th>Barang</th>
                                     <th>Jumlah</th>
-                                    <th>Nominal</th>
+                                    <th>Nominal Pemasukan</th>
+                                    <th>Nominal Pengeluaran</th>
                                     <th>Waktu</th>
                                     <th class="notexport" style="display: none;">Waktu</th>
                                     <th class="notexport">Aksi</th>
@@ -73,7 +74,13 @@
                                             <td>{{ $transaction->item->name }}</td>
                                         @endif
                                         <td>{{ $transaction->quantity }}</td>
-                                        <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
+                                            @if ($transaction->type == 'income')
+                                            <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
+                                            <td></td>
+                                            @else
+                                            <td></td>
+                                            <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
+                                            @endif
                                         <td>{{ $transaction->getFormattedCreatedAtAttribute() }}</td>
                                         <td style="display: none;">{{ $transaction->created_at }}</td>
                                         <td scope="row" class="text-center">
@@ -86,6 +93,20 @@
                                     </tr>
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="text-center">Total</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="income_total">Rp. {{ $formatted_income_total }}</th>
+                                    <th class="expense_total">Rp. {{ $formatted_expense_total }}</th>
+                                    <th colspan="2"></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -173,7 +194,7 @@
                 let max = moment($('#max').val()).isValid() ?
                     new Date( $('#max').val() ).setUTCHours(23,59,59,999):
                     null;
-                var date = new Date( data[9] );
+                var date = new Date( data[10] );
         
                 if (
                     ( min === null && max === null ) ||
@@ -191,12 +212,12 @@
             // Create date inputs
             minDate = new DateTime($('#min'), {
                 // format: 'D-MM-YYYY hh:mm:ss'
-                format: 'YYYY-MM-D'
+                format: 'YYYY-MM-DD'
                 // format: 'MMMM Do YYYY'
             });
             maxDate = new DateTime($('#max'), {
                 // format: 'D-MM-YYYY hh:mm:ss'
-                format: 'YYYY-MM-D'
+                format: 'YYYY-MM-DD'
                 // format: 'MMMM Do YYYY'
             });
 
@@ -209,7 +230,8 @@
                         className:'btn btn-success',
                         exportOptions: {
                             columns: 'th:not(.notexport)'
-                        }
+                        },
+                        footer: true
                     }, 
                     {
                         extend:'print',
@@ -217,7 +239,8 @@
                         className:'btn btn-success',
                         exportOptions: {
                             columns: 'th:not(.notexport)'
-                        }
+                        },
+                        footer: true
                     },
                     {
                         extend:'excel',
@@ -225,7 +248,8 @@
                         className:'btn btn-success',
                         exportOptions: {
                             columns: 'th:not(.notexport)'
-                        }
+                        },
+                        footer: true
                     },
                     {
                         extend:'pdf',
@@ -233,13 +257,14 @@
                         className:'btn btn-success',
                         exportOptions: {
                             columns: 'th:not(.notexport)'
-                        }
+                        },
+                        footer: true
                     },
-                    {
-                        extend:'colvis',
-                        text:'Kolom',
-                        className:'btn btn-success',
-                    },
+                    // {
+                    //     extend:'colvis',
+                    //     text:'Kolom',
+                    //     className:'btn btn-success',
+                    // },
                 ],
                 dom: "<'row'<'col-md-3'l><'col-md-5'B><'col-md-4'f>>" +
                     "<'row'<'col-md-12'tr>>" +
@@ -279,13 +304,29 @@
             });
 
             // Refilter the table
-            $('#search_date_range').on('click', function () {
+            $('#search_date_range').on('click', function (e) {
+                e.preventDefault();
+                var minDate = $('#min').val();
+                var maxDate = $('#max').val();
+                $.ajax({
+                    url: '/journal/get-total-value/'+ minDate + '/' + maxDate,
+                    method: 'GET',
+                    success: function(response){
+                        var incomeTotal = $('.income_total');
+                        var expenseTotal = $('.expense_total');
+
+                        incomeTotal.text(response.formatted_income_total);
+                        expenseTotal.text(response.formatted_expense_total);
+                    }
+                });
                 table.draw();
             });
             
             $('#reset_date_range').on('click', function () {
                 $('#min').val('');
                 $('#max').val('');
+                $('.income_total').text('Rp. {{ $formatted_income_total }}');
+                $('.expense_total').text('Rp. {{ $formatted_expense_total }}');
                 table.draw();
             });
 
@@ -308,51 +349,6 @@
                     }
                 })
             });
-
-            @foreach ($transactions as $transaction)
-            $('#packageIncome{{ $transaction->id }}').on('change',function(e){
-                e.preventDefault();
-                var id = $(this).val();
-                $.ajax({
-                    url: '/daily-transactions/get-package-price/' + id,
-                    method: 'GET',
-                    success: function(response){
-                        var quantity = $('#quantityIncome{{ $transaction->id }}');
-                        var subtotal = $('#subtotalIncome{{ $transaction->id }}');
-                        var subtotalVal = quantity.val() * response.replace(".", "");
-
-                        subtotal.val(subtotalVal);
-                        
-                        quantity.on('change',function(){
-                            subtotal.val(quantity.val() * response.replace(".", ""));
-                        });
-                    }
-                });
-            });
-            @endforeach
-
-            @foreach ($transactions as $transaction)
-            $('#quantityIncome{{ $transaction->id }}').on('change',function(e){
-                e.preventDefault();
-                var id = $('#packageIncome{{ $transaction->id }}').val();
-                $.ajax({
-                    url: '/daily-transactions/get-package-price/' + id,
-                    method: 'GET',
-                    success: function(response){
-                        var package = $('#packageIncome{{ $transaction->id }}');
-                        var quantity = $('#quantityIncome{{ $transaction->id }}');
-                        var subtotal = $('#subtotalIncome{{ $transaction->id }}');
-                        var subtotalVal = quantity.val() * response.replace(".", "");
-
-                        subtotal.val(subtotalVal);
-
-                        package.on('change',function(){
-                            subtotal.val(quantity.val() * response.replace(".", ""));
-                        });
-                    }
-                });
-            })
-            @endforeach
         });
     </script>
 @endsection

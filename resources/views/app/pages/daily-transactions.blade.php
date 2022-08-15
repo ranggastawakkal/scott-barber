@@ -39,7 +39,8 @@
                                     <th>Paket Jasa</th>
                                     <th>Barang</th>
                                     <th>Jumlah</th>
-                                    <th>Nominal</th>
+                                    <th>Nominal Pemasukan</th>
+                                    <th>Nominal Pengeluaran</th>
                                     <th>Waktu</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -60,7 +61,13 @@
                                             <td>{{ $transaction->item->name }}</td>
                                         @endif
                                         <td>{{ $transaction->quantity }}</td>
-                                        <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
+                                        @if ($transaction->type == 'income')
+                                            <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
+                                            <td></td>
+                                        @else
+                                            <td></td>
+                                            <td>Rp. {{ $transaction->getFormattedTotalAttribute() }}</td>
+                                        @endif
                                         <td>{{ $transaction->updated_at }}</td>
                                         <td scope="row" class="text-center">
                                             <a href="" data-bs-toggle="modal"
