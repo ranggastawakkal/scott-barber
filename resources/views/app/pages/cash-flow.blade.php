@@ -1,5 +1,5 @@
 @extends('app/components/main')
-@section('title', 'Jurnal Keuangan')
+@section('title', 'Arus Kas')
 
 @section('content')
     <div class="row">
@@ -7,7 +7,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-dark">
-                        Jurnal Keuangan
+                        Arus Kas
                     </h6>
                 </div>
                 @if ($errors->count() > 0)
@@ -94,11 +94,11 @@
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                <tr>
+                                <tr class=" border-top">
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                    <th class="text-center">Total</th>
+                                    <th class="text-center">Total Pemasukan</th>
                                     <th></th>
                                     <th></th>
                                     <th></th>

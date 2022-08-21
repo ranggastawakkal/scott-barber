@@ -31,11 +31,21 @@
             <i class="fa-solid fa-money-bill-transfer"></i>
             <span>Transaksi Harian</span></a>
     </li>
+
     @if (auth()->user()->role == 'admin')
-    <li class="nav-item {{ request()->is('journal') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('journal') }}">
+    <li class="nav-item {{ request()->is('journal*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseJournal"
+        aria-expanded="true" aria-controls="collapseJournal">
             <i class="fas fa-fw fa-book-open"></i>
-            <span>Jurnal Keuangan</span></a>
+            <span>Jurnal Keuangan</span>
+        </a>
+        <div id="collapseJournal" class="collapse" aria-labelledby="headingUtilities"
+        data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ request()->is('journal/cash-flow') ? 'active' : '' }}" href="{{ route('cash-flow') }}">Arus Kas</a>
+                <a class="collapse-item {{ request()->is('journal/income-statement') ? 'active' : '' }}" href="{{ route('income-statement') }}">Laba / Rugi</a>
+            </div>
+        </div>
     </li>
     @endif
 

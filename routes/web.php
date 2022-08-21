@@ -41,8 +41,10 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth','RoleCheck:admin'])->group(function () {
     Route::prefix('journal')->group(function(){
-        Route::get('/', [JournalController::class, 'index'])->name('journal');
+        Route::get('/cash-flow', [JournalController::class, 'cashFlow'])->name('cash-flow');
+        Route::get('/income-statement', [JournalController::class, 'incomeStatement'])->name('income-statement');
         Route::get('/get-total-value/{minDate}/{maxDate}', [JournalController::class, 'getTotalValue'])->name('journal.get-total-value');
+        Route::get('/get-income-statement-value/{minDate}/{maxDate}', [JournalController::class, 'getIncomeStatementValue'])->name('journal.get-income-statement-value');
     });
     Route::prefix('package')->group(function () {
         Route::get('/', [PackageController::class, 'index'])->name('package');
