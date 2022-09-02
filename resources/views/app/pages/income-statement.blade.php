@@ -41,51 +41,73 @@
                         </table>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-borderless display nowrap" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-borderless" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr style="display: none;">
                                     <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <th class="text-right">Periode :</th>
-                                <th><span class="from_date">{{ $from_date->created_at->format('d M Y') }}</span> - <span class="to_date">{{ $to_date->created_at->format('d M Y') }}</span></th>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Pendapatan Usaha</th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <td>Pendapatan Penjualan Usaha</td>
-                                <td class="income_total">Rp. {{ $formatted_income_total }}</td>
-                            </tr>
-                            <tr>
-                                <th>Total Pendapatan</th>
-                                <th class="income_total">Rp. {{ $formatted_income_total }}</th>
-                            </tr>
-                            <tr>
-                                <th>Beban Usaha</th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <td>Pengeluaran</td>
-                                <td class="expense_total">Rp. {{ $formatted_expense_total }}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>Laba / Rugi Bersih</th>
-                                <th class="cash_total">Rp. {{ $formatted_cash_total }}</th>
-                            </tr>
-                        </tbody>
+                                <tbody>
+                                <tr>
+                                    <th class="text-right">Periode :</th>
+                                    <th><span class="from_date">{{ $from_date->created_at->format('d M Y') }}</span> - <span class="to_date">{{ $to_date->created_at->format('d M Y') }}</span></th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="tr-pendapatan">
+                                    <th>Pendapatan</th>
+                                    <th></th>
+                                </tr>
+                                @foreach ($packages as $key => $value)
+                                    <tr class="all-time-income">
+                                        <td>{{ $value->package->name }}</td>
+                                        <td>Rp. {{ number_format($income_subtotal[$key]->total,0,',','.') }}</td>
+                                    </tr>
+                                @endforeach
+                                <tr>
+                                    <th>Total Pendapatan</th>
+                                    <th class="income_total">Rp. {{ $formatted_income_total }}</th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th>Beban</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td>Pengeluaran</td>
+                                    <td class="expense_subtotal">Rp. {{ $formatted_expense_subtotal }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Biaya Listrik</td>
+                                    <td>Rp. {{ $formatted_biaya_listrik }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Biaya Air</td>
+                                    <td>Rp. {{ $formatted_biaya_air }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Biaya Gaji</td>
+                                    <td>Rp. {{ $formatted_biaya_gaji }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Pengeluaran</th>
+                                    <th class="expense_total">Rp. {{ $formatted_expense_total }}</th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Laba / Rugi Bersih</th>
+                                    <th class="cash_total">Rp. {{ $formatted_cash_total }}</th>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -113,6 +135,7 @@
             });
 
             var table = $('#dataTable').DataTable({
+                "pageLength":1000,
 
                 buttons: [
                     {
@@ -151,11 +174,6 @@
                         },
                         footer: true
                     },
-                    // {
-                    //     extend:'colvis',
-                    //     text:'Kolom',
-                    //     className:'btn btn-success',
-                    // },
                 ],
                 dom: "<'row justify-content-center'<'col-md-3'B>>" +
                     "<'row'<'col-md-12'tr>>",
@@ -172,14 +190,32 @@
                     method: 'GET',
                     success: function(response){
                         var incomeTotal = $('.income_total');
+                        var expenseSubtotal = $('.expense_subtotal');
                         var expenseTotal = $('.expense_total');
                         var cashTotal = $('.cash_total');
+                        var packages = $('.packages');
+                        var incomeSubtotal = $('.income_subtotal');
                         var fromDate = $('.from_date');
                         var toDate = $('.to_date');
-
+                        var allTimeIncome = $('.all-time-income');
+                        
                         incomeTotal.text(response.formatted_income_total);
+                        expenseSubtotal.text(response.formatted_expense_subtotal);
                         expenseTotal.text(response.formatted_expense_total);
                         cashTotal.text(response.formatted_cash_total);
+
+                        $('.all-time-income td').replaceWith('<th class="notexport">' + $('.all-time-income td').html() + '</th>');
+                        allTimeIncome.remove();
+
+                        let text = "";
+                        
+                        response.income_subtotal.forEach(function(item, index){
+                            text += "<tr><td>"+ JSON.stringify(response.packages[index]['name']).replace(/"/g, "") +"</td><td>"+ JSON.stringify(response.income_subtotal[index]['total']).replace(/"/g, "") +"</td></tr>";
+                        });
+
+                        $('.tr-pendapatan').after(text);
+
+                        
                         fromDate.text(response.from_date);
                         toDate.text(response.to_date);
                     }
@@ -191,7 +227,7 @@
                 $('#min').val('');
                 $('#max').val('');
                 $('.income_total').text('Rp. {{ $formatted_income_total }}');
-                $('.expense_total').text('Rp. {{ $formatted_expense_total }}');
+                $('.expense_subtotal').text('Rp. {{ $formatted_expense_subtotal }}');
                 $('.cash_total').text('Rp. {{ $formatted_cash_total }}');
                 $('.from_date').text('{{ $from_date->created_at->format('d M Y') }}');
                 $('.to_date').text('{{ $to_date->created_at->format('d M Y') }}');
@@ -200,23 +236,6 @@
 
             table.buttons().container()
                 .appendTo('#dataTable_wrapper .col-md-5:eq(0)');
-
-            $('.btn-delete').on('click', function(event) {
-                event.preventDefault();
-                const url = $(this).attr('href');
-                Swal.fire({
-                    title: 'Anda yakin?',
-                    text: "Data akan dihapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    cancelButtonText: 'Batal',
-                    confirmButtonText: 'Hapus'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = url;
-                    }
-                })
-            });
         });
     </script>
 @endsection
