@@ -39,8 +39,9 @@ class JournalController extends Controller
         $biaya_listrik = 200000;
         $biaya_air = 60000;
         $biaya_gaji = 5000000;
+        $biaya_sewa = 700000;
         
-        $expense_total = $expense_subtotal + $biaya_listrik + $biaya_air + $biaya_gaji;
+        $expense_total = $expense_subtotal + $biaya_listrik + $biaya_air + $biaya_gaji + $biaya_sewa;
         $cash_total = $income_total - $expense_total;
         $formatted_income_total = number_format($income_total,0,',','.');
         $formatted_expense_subtotal = number_format($expense_subtotal,0,',','.');
@@ -49,11 +50,12 @@ class JournalController extends Controller
         $formatted_biaya_listrik = number_format($biaya_listrik,0,',','.');
         $formatted_biaya_air = number_format($biaya_air,0,',','.');
         $formatted_biaya_gaji = number_format($biaya_gaji,0,',','.');
+        $formatted_biaya_sewa = number_format($biaya_sewa,0,',','.');
 
         $from_date = Transaction::select('created_at')->orderBy('created_at','asc')->first();
         $to_date = Transaction::select('created_at')->orderBy('created_at','desc')->first();
 
-        return view('app.pages.income-statement', compact('packages','income_subtotal','formatted_income_total','formatted_expense_subtotal','formatted_expense_total','formatted_cash_total', 'formatted_biaya_listrik','formatted_biaya_air','formatted_biaya_gaji', 'from_date','to_date'));
+        return view('app.pages.income-statement', compact('packages','income_subtotal','formatted_income_total','formatted_expense_subtotal','formatted_expense_total','formatted_cash_total', 'formatted_biaya_listrik','formatted_biaya_air','formatted_biaya_gaji','formatted_biaya_sewa', 'from_date','to_date'));
     }
 
     public function getTotalValue($minDate,$maxDate)
@@ -79,8 +81,9 @@ class JournalController extends Controller
         $biaya_listrik = 200000;
         $biaya_air = 60000;
         $biaya_gaji = 5000000;
+        $biaya_sewa = 700000;
         
-        $expense_total = $expense_subtotal + $biaya_listrik + $biaya_air + $biaya_gaji;
+        $expense_total = $expense_subtotal + $biaya_listrik + $biaya_air + $biaya_gaji + $biaya_sewa;
         $cash_total = $income_total - $expense_total;
         $formatted_income_total = 'Rp. ' . number_format($income_total,0,',','.');
         $formatted_expense_subtotal = 'Rp. ' . number_format($expense_subtotal,0,',','.');
@@ -89,6 +92,7 @@ class JournalController extends Controller
         $formatted_biaya_listrik = number_format($biaya_listrik,0,',','.');
         $formatted_biaya_air = number_format($biaya_air,0,',','.');
         $formatted_biaya_gaji = number_format($biaya_gaji,0,',','.');
+        $formatted_biaya_sewa = number_format($biaya_sewa,0,',','.');
         
         $from_date = Carbon::parse($minDate)->format('d M Y');
         $to_date = Carbon::parse($maxDate)->format('d M Y');
@@ -101,6 +105,7 @@ class JournalController extends Controller
             'formatted_biaya_listrik' => $formatted_biaya_listrik,
             'formatted_biaya_air' => $formatted_biaya_air,
             'formatted_biaya_gaji' => $formatted_biaya_gaji,
+            'formatted_biaya_sewa' => $formatted_biaya_sewa,
             'packages' => $packages,
             'income_subtotal' => $income_subtotal,
             'from_date' => $from_date,

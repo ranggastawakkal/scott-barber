@@ -96,8 +96,16 @@
                                     <td>Rp. {{ $formatted_biaya_gaji }}</td>
                                 </tr>
                                 <tr>
+                                    <td>Biaya Sewa</td>
+                                    <td>Rp. {{ $formatted_biaya_sewa }}</td>
+                                </tr>
+                                <tr>
                                     <th>Total Pengeluaran</th>
                                     <th class="expense_total">Rp. {{ $formatted_expense_total }}</th>
+                                </tr>
+                                <tr>
+                                    <th>Pajak Penjualan</th>
+                                    <th class="expense_total">Rp. 0</th>
                                 </tr>
                                 <tr>
                                     <td></td>
