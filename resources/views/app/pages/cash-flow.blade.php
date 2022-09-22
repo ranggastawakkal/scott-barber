@@ -1,5 +1,5 @@
 @extends('app/components/main')
-@section('title', 'Arus Kas')
+@section('title', 'Pembukuan')
 
 @section('content')
     <div class="row">
